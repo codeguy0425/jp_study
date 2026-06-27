@@ -334,6 +334,12 @@ body {
   gap: var(--spacing-xs);
 }
 .voice-btn:active { background: var(--accent-violet-deep); border-color: var(--accent-lime); }
+.pitch-tag {
+  font-size: 11px;
+  color: var(--accent-lime);
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+}
 .grammar-item .example {
   font-size: 15px;
   padding: var(--spacing-sm) var(--spacing-md);

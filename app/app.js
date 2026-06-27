@@ -422,7 +422,8 @@ const App = {
           voiceBtns = `<div class="grammar-voice">` +
             items.map((v, vi) => {
               const label = typeof v === 'string' ? v : v.label;
-              return `<button class="voice-btn" data-w="${w.id}" data-g="${gi}" data-vi="${vi}">🔊 ${label}</button>`;
+              const pitch = typeof v === 'object' && v.pitch ? ` <span class="pitch-tag">${v.pitch}</span>` : '';
+              return `<button class="voice-btn" data-w="${w.id}" data-g="${gi}" data-vi="${vi}">🔊 ${label}${pitch}</button>`;
             }).join('') +
             `</div>`;
         }
