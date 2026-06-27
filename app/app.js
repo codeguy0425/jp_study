@@ -243,25 +243,7 @@ const App = {
 
     const wrap = container.querySelector('.flashcard-wrap');
     if (wrap) {
-      wrap.addEventListener('touchstart', e => { App._swipeX = e.touches[0].clientX; }, { passive: true });
-      wrap.addEventListener('touchmove', e => {
-        if (App._swipeX == null) return;
-        const dx = e.touches[0].clientX - App._swipeX;
-        if (dx < 0) {
-          wrap.style.transform = `translateX(${dx}px)`;
-          wrap.style.opacity = 1 + (dx / 300);
-        }
-      }, { passive: true });
-      wrap.addEventListener('touchend', e => {
-        if (App._swipeX == null) return;
-        const dx = (e.changedTouches[0].clientX - App._swipeX);
-        wrap.style.transform = '';
-        wrap.style.opacity = '';
-        App._swipeX = null;
-        if (dx < -60 && App.state.flashcardFlipped && !isLast) {
-          App.nextCard();
-        }
-      }, { passive: true });
+      // swipe removed — touch to flip works via onclick on .flashcard
     }
   },
 
