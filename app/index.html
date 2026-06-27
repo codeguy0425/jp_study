@@ -89,7 +89,6 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
   padding-bottom: var(--spacing-lg);
 }
 .app-main::-webkit-scrollbar { width: 4px; }
@@ -490,6 +489,45 @@ body {
 .empty-state .icon { font-size: 40px; margin-bottom: var(--spacing-lg); display: block; }
 .empty-state p { font-size: 14px; line-height: 1.6; }
 
+/* ─── kana chart ─── */
+.kana-chart-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: var(--spacing-lg); }
+.kana-chart { width: 100%; min-width: 340px; border-collapse: separate; border-spacing: 3px; }
+.kana-chart th {
+  font-size: 11px;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  text-align: center;
+  font-weight: 500;
+}
+.kana-chart .row-label {
+  font-size: 13px;
+  color: var(--accent-lime);
+  font-weight: 600;
+  text-align: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  white-space: nowrap;
+  width: 48px;
+}
+.kana-chart .empty { background: transparent; }
+.kana-cell-lg {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-sm);
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  min-width: 64px;
+}
+.kana-cell-lg:active { background: var(--accent-violet-deep); border-color: var(--accent-lime); }
+.kana-cell-lg .hira { font-size: 20px; font-weight: 600; display: block; line-height: 1.3; }
+.kana-cell-lg .kata { font-size: 15px; color: var(--on-dark-muted); display: block; line-height: 1.2; }
+.kana-cell-lg .rom { font-size: 10px; color: var(--on-dark-faint); display: block; line-height: 1.2; text-transform: lowercase; }
+.kana-chart.compact .kana-cell-lg { min-width: 56px; }
+.kana-chart.compact .kana-cell-lg .hira { font-size: 18px; }
+
 /* ─── flashcard ─── */
 .flashcard-filter-bar {
   display: flex;
@@ -521,6 +559,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: var(--spacing-lg) 0;
+  touch-action: none;
 }
 .flashcard-counter {
   font-size: 13px;
@@ -744,6 +783,11 @@ body {
     <div id="progressContent"></div>
   </div>
 
+  <!-- kana chart -->
+  <div class="view" id="viewKana">
+    <div id="kanaChartContent"></div>
+  </div>
+
 </main>
 
 <!-- tabs -->
@@ -756,6 +800,9 @@ body {
   </button>
   <button class="tab-btn" data-tab="quiz" onclick="App.switchTab('quiz')">
     <span class="tab-icon">✍️</span> 測驗
+  </button>
+  <button class="tab-btn" data-tab="kana" onclick="App.switchTab('kana')">
+    <span class="tab-icon">🔤</span> 五十音
   </button>
   <button class="tab-btn" data-tab="progress" onclick="App.switchTab('progress')">
     <span class="tab-icon">📊</span> 進度
@@ -1056,6 +1103,28 @@ const FLASH_KANA = [
   { h: 'わ', k: 'ワ', r: 'wa' }, { h: 'を', k: 'ヲ', r: 'wo' }, { h: 'ん', k: 'ン', r: 'n' },
 ];
 
+const KANA_CHART = [
+  { label: 'あ行', a: { h: 'あ', k: 'ア', r: 'a' }, i: { h: 'い', k: 'イ', r: 'i' }, u: { h: 'う', k: 'ウ', r: 'u' }, e: { h: 'え', k: 'エ', r: 'e' }, o: { h: 'お', k: 'オ', r: 'o' } },
+  { label: 'か行', a: { h: 'か', k: 'カ', r: 'ka' }, i: { h: 'き', k: 'キ', r: 'ki' }, u: { h: 'く', k: 'ク', r: 'ku' }, e: { h: 'け', k: 'ケ', r: 'ke' }, o: { h: 'こ', k: 'コ', r: 'ko' } },
+  { label: 'さ行', a: { h: 'さ', k: 'サ', r: 'sa' }, i: { h: 'し', k: 'シ', r: 'shi' }, u: { h: 'す', k: 'ス', r: 'su' }, e: { h: 'せ', k: 'セ', r: 'se' }, o: { h: 'そ', k: 'ソ', r: 'so' } },
+  { label: 'た行', a: { h: 'た', k: 'タ', r: 'ta' }, i: { h: 'ち', k: 'チ', r: 'chi' }, u: { h: 'つ', k: 'ツ', r: 'tsu' }, e: { h: 'て', k: 'テ', r: 'te' }, o: { h: 'と', k: 'ト', r: 'to' } },
+  { label: 'な行', a: { h: 'な', k: 'ナ', r: 'na' }, i: { h: 'に', k: 'ニ', r: 'ni' }, u: { h: 'ぬ', k: 'ヌ', r: 'nu' }, e: { h: 'ね', k: 'ネ', r: 'ne' }, o: { h: 'の', k: 'ノ', r: 'no' } },
+  { label: 'は行', a: { h: 'は', k: 'ハ', r: 'ha' }, i: { h: 'ひ', k: 'ヒ', r: 'hi' }, u: { h: 'ふ', k: 'フ', r: 'fu' }, e: { h: 'へ', k: 'ヘ', r: 'he' }, o: { h: 'ほ', k: 'ホ', r: 'ho' } },
+  { label: 'ま行', a: { h: 'ま', k: 'マ', r: 'ma' }, i: { h: 'み', k: 'ミ', r: 'mi' }, u: { h: 'む', k: 'ム', r: 'mu' }, e: { h: 'め', k: 'メ', r: 'me' }, o: { h: 'も', k: 'モ', r: 'mo' } },
+  { label: 'や行', a: { h: 'や', k: 'ヤ', r: 'ya' }, i: null, u: { h: 'ゆ', k: 'ユ', r: 'yu' }, e: null, o: { h: 'よ', k: 'ヨ', r: 'yo' } },
+  { label: 'ら行', a: { h: 'ら', k: 'ラ', r: 'ra' }, i: { h: 'り', k: 'リ', r: 'ri' }, u: { h: 'る', k: 'ル', r: 'ru' }, e: { h: 'れ', k: 'レ', r: 're' }, o: { h: 'ろ', k: 'ロ', r: 'ro' } },
+  { label: 'わ行', a: { h: 'わ', k: 'ワ', r: 'wa' }, i: null, u: null, e: null, o: { h: 'を', k: 'ヲ', r: 'wo' } },
+  { label: 'ん', a: { h: 'ん', k: 'ン', r: 'n' }, i: null, u: null, e: null, o: null },
+];
+
+const DAKUON_CHART = [
+  { label: 'が行', a: { h: 'が', k: 'ガ', r: 'ga' }, i: { h: 'ぎ', k: 'ギ', r: 'gi' }, u: { h: 'ぐ', k: 'グ', r: 'gu' }, e: { h: 'げ', k: 'ゲ', r: 'ge' }, o: { h: 'ご', k: 'ゴ', r: 'go' } },
+  { label: 'ざ行', a: { h: 'ざ', k: 'ザ', r: 'za' }, i: { h: 'じ', k: 'ジ', r: 'ji' }, u: { h: 'ず', k: 'ズ', r: 'zu' }, e: { h: 'ぜ', k: 'ゼ', r: 'ze' }, o: { h: 'ぞ', k: 'ゾ', r: 'zo' } },
+  { label: 'だ行', a: { h: 'だ', k: 'ダ', r: 'da' }, i: { h: 'ぢ', k: 'ヂ', r: 'ji' }, u: { h: 'づ', k: 'ヅ', r: 'zu' }, e: { h: 'で', k: 'デ', r: 'de' }, o: { h: 'ど', k: 'ド', r: 'do' } },
+  { label: 'ば行', a: { h: 'ば', k: 'バ', r: 'ba' }, i: { h: 'び', k: 'ビ', r: 'bi' }, u: { h: 'ぶ', k: 'ブ', r: 'bu' }, e: { h: 'べ', k: 'ベ', r: 'be' }, o: { h: 'ぼ', k: 'ボ', r: 'bo' } },
+  { label: 'ぱ行', a: { h: 'ぱ', k: 'パ', r: 'pa' }, i: { h: 'ぴ', k: 'ピ', r: 'pi' }, u: { h: 'ぷ', k: 'プ', r: 'pu' }, e: { h: 'ぺ', k: 'ペ', r: 'pe' }, o: { h: 'ぽ', k: 'ポ', r: 'po' } },
+];
+
 const App = {
   state: {
     tab: 'home',
@@ -1102,6 +1171,7 @@ const App = {
     document.getElementById('backBtn').classList.remove('visible');
     if (tab === 'lessons') { this.renderLessons(); }
     if (tab === 'quiz') { this.renderQuiz(); }
+    if (tab === 'kana') { this.renderKanaChart(); }
     if (tab === 'progress') { this.renderProgress(); }
     document.getElementById('appMain').scrollTop = 0;
   },
@@ -1130,6 +1200,75 @@ const App = {
     backBtn.classList.add('visible');
     this.renderLessonDetail(id);
     document.getElementById('appMain').scrollTop = 0;
+  },
+
+  /* ─── kana chart ─── */
+  renderKanaChart() {
+    const container = document.getElementById('kanaChartContent');
+    const cols = ['a', 'i', 'u', 'e', 'o'];
+    const colLabels = ['あ段', 'い段', 'う段', 'え段', 'お段'];
+
+    const renderTable = (data, title) => {
+      let h = `<div class="section-title" style="margin-top:var(--spacing-xl);">${title}</div>
+        <div class="kana-chart-scroll"><table class="kana-chart">
+        <thead><tr><th></th>${colLabels.map(l => `<th>${l}</th>`).join('')}</tr></thead><tbody>`;
+      data.forEach(row => {
+        h += `<tr><td class="row-label">${row.label}</td>`;
+        cols.forEach(c => {
+          const k = row[c];
+          if (!k) { h += `<td class="empty"></td>`; return; }
+          h += `<td class="kana-cell-lg" onclick="App.speak('${k.h}')">
+            <span class="hira">${k.h}</span>
+            <span class="kata">${k.k}</span>
+            <span class="rom">${k.r}</span>
+          </td>`;
+        });
+        h += `</tr>`;
+      });
+      h += `</tbody></table></div>`;
+      return h;
+    };
+
+    let html = `<h2 style="font-size:18px;font-weight:600;margin-bottom:var(--spacing-sm);">五十音圖</h2>
+      <p style="font-size:13px;color:var(--on-dark-muted);margin-bottom:var(--spacing-lg);line-height:1.7;">點擊任一儲存格聽發音 · 上為平假名 · 下為片假名</p>`;
+
+    html += renderTable(KANA_CHART, '清音');
+    html += renderTable(DAKUON_CHART, '濁音 · 半濁音');
+
+    html += `<div class="section-title" style="margin-top:var(--spacing-xl);">拗音</div>
+      <div class="kana-chart-scroll"><table class="kana-chart compact">
+      <thead><tr><th></th><th>や</th><th>ゆ</th><th>よ</th></tr></thead><tbody>`;
+    const yoon = [
+      { label: 'き行', a: { h: 'きゃ', k: 'キャ', r: 'kya' }, i: { h: 'きゅ', k: 'キュ', r: 'kyu' }, u: { h: 'きょ', k: 'キョ', r: 'kyo' } },
+      { label: 'し行', a: { h: 'しゃ', k: 'シャ', r: 'sha' }, i: { h: 'しゅ', k: 'シュ', r: 'shu' }, u: { h: 'しょ', k: 'ショ', r: 'sho' } },
+      { label: 'ち行', a: { h: 'ちゃ', k: 'チャ', r: 'cha' }, i: { h: 'ちゅ', k: 'チュ', r: 'chu' }, u: { h: 'ちょ', k: 'チョ', r: 'cho' } },
+      { label: 'に行', a: { h: 'にゃ', k: 'ニャ', r: 'nya' }, i: { h: 'にゅ', k: 'ニュ', r: 'nyu' }, u: { h: 'にょ', k: 'ニョ', r: 'nyo' } },
+      { label: 'ひ行', a: { h: 'ひゃ', k: 'ヒャ', r: 'hya' }, i: { h: 'ひゅ', k: 'ヒュ', r: 'hyu' }, u: { h: 'ひょ', k: 'ヒョ', r: 'hyo' } },
+      { label: 'み行', a: { h: 'みゃ', k: 'ミャ', r: 'mya' }, i: { h: 'みゅ', k: 'ミュ', r: 'myu' }, u: { h: 'みょ', k: 'ミョ', r: 'myo' } },
+      { label: 'り行', a: { h: 'りゃ', k: 'リャ', r: 'rya' }, i: { h: 'りゅ', k: 'リュ', r: 'ryu' }, u: { h: 'りょ', k: 'リョ', r: 'ryo' } },
+      { label: 'ぎ行', a: { h: 'ぎゃ', k: 'ギャ', r: 'gya' }, i: { h: 'ぎゅ', k: 'ギュ', r: 'gyu' }, u: { h: 'ぎょ', k: 'ギョ', r: 'gyo' } },
+      { label: 'じ行', a: { h: 'じゃ', k: 'ジャ', r: 'ja' }, i: { h: 'じゅ', k: 'ジュ', r: 'ju' }, u: { h: 'じょ', k: 'ジョ', r: 'jo' } },
+      { label: 'び行', a: { h: 'びゃ', k: 'ビャ', r: 'bya' }, i: { h: 'びゅ', k: 'ビュ', r: 'byu' }, u: { h: 'びょ', k: 'ビョ', r: 'byo' } },
+      { label: 'ぴ行', a: { h: 'ぴゃ', k: 'ピャ', r: 'pya' }, i: { h: 'ぴゅ', k: 'ピュ', r: 'pyu' }, u: { h: 'ぴょ', k: 'ピョ', r: 'pyo' } },
+    ];
+    const yCols = ['a', 'i', 'u'];
+    const yColLabels = ['や段', 'ゆ段', 'よ段'];
+    yoon.forEach(r => {
+      html += `<tr><td class="row-label">${r.label}</td>`;
+      yCols.forEach(c => {
+        const k = r[c];
+        if (!k) { html += `<td class="empty"></td>`; return; }
+        html += `<td class="kana-cell-lg" onclick="App.speak('${k.h}')">
+          <span class="hira">${k.h}</span>
+          <span class="kata">${k.k}</span>
+          <span class="rom">${k.r}</span>
+        </td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div>`;
+
+    container.innerHTML = html;
   },
 
   /* ─── flashcard ─── */
