@@ -323,6 +323,27 @@ body {
   line-height: 1.7;
   margin-bottom: var(--spacing-sm);
 }
+.grammar-voice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+.voice-btn {
+  background: var(--ink-deep);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--on-primary);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+.voice-btn:active { background: var(--accent-violet-deep); border-color: var(--accent-lime); }
 .grammar-item .example {
   font-size: 15px;
   padding: var(--spacing-sm) var(--spacing-md);
@@ -765,7 +786,7 @@ const COURSE = {
       ],
       grammar: [
         { pattern: '日語發音特色', explain: '日語每個假名都是一個「拍」（mora），長度相等。母音有五個：あ・い・う・え・お。', example: 'あ い う え お（a-i-u-e-o）' },
-        { pattern: '聲調（アクセント）', explain: '日語有高低聲調，同一個單字聲調不同意思就不同。例如「はし」可以是「橋」或「箸」。', example: 'はし①（箸·筷子）vs はし②（橋）' },
+        { pattern: '聲調（アクセント）', explain: '日語有高低聲調，同一個單字聲調不同意思就不同。例如「はし」可以是「橋」或「箸」。點擊聆聽差別：', example: 'はし①（箸·筷子）vs はし②（橋）', voice: ['はし（箸）', 'はし（橋）', 'あめ（飴）', 'あめ（雨）'] },
       ],
       quiz: [
         { q: '日語的母音有幾個？', opts: ['3 個', '5 個', '7 個', '10 個'], ans: 1 },
@@ -1370,11 +1391,19 @@ const App = {
 
     if (w.grammar && w.grammar.length) {
       html += `<div class="section-title">📚 文法</div>`;
-      w.grammar.forEach(g => {
+      w.grammar.forEach((g, gi) => {
+        let voiceBtns = '';
+        if (g.voice) {
+          const items = Array.isArray(g.voice) ? g.voice : [g.voice];
+          voiceBtns = `<div class="grammar-voice">` +
+            items.map((v, vi) => `<button class="voice-btn" data-w="${w.id}" data-g="${gi}" data-vi="${vi}">🔊 ${v}</button>`).join('') +
+            `</div>`;
+        }
         html += `<div class="grammar-item">
           <div class="pattern">${g.pattern}</div>
           <div class="explain">${g.explain}</div>
           <div class="example">${g.example}</div>
+          ${voiceBtns}
         </div>`;
       });
     }
@@ -1401,6 +1430,19 @@ const App = {
     }
 
     detail.innerHTML = html;
+
+    detail.querySelectorAll('.voice-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const w = COURSE.weeks.find(x => x.id === Number(btn.dataset.w));
+        if (!w) return;
+        const g = w.grammar[Number(btn.dataset.g)];
+        if (!g) return;
+        const items = Array.isArray(g.voice) ? g.voice : [g.voice];
+        const text = items[Number(btn.dataset.vi)].replace(/[（）].*$/g, '').trim();
+        this.speak(text);
+      });
+    });
   },
 
   markDone(id) {
