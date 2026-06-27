@@ -833,7 +833,12 @@ const COURSE = {
       ],
       grammar: [
         { pattern: '日語發音特色', explain: '日語每個假名都是一個「拍」（mora），長度相等。母音有五個：あ・い・う・え・お。', example: 'あ い う え お（a-i-u-e-o）' },
-        { pattern: '聲調（アクセント）', explain: '日語有高低聲調，同一個單字聲調不同意思就不同。例如「はし」可以是「橋」或「箸」。點擊聆聽差別：', example: 'はし①（箸·筷子）vs はし②（橋）', voice: ['はし（箸）', 'はし（橋）', 'あめ（飴）', 'あめ（雨）'] },
+        { pattern: '聲調（アクセント）', explain: '日語有高低聲調，同一個單字聲調不同意思就不同。例如「はし」可以是「橋」或「箸」。點擊聆聽差別：', example: 'はし①（箸·筷子）vs はし②（橋）', voice: [
+          { label: 'はし（箸）', file: 'audio/hashi_chopsticks.mp3' },
+          { label: 'はし（橋）', file: 'audio/hashi_bridge.mp3' },
+          { label: 'あめ（飴）', file: 'audio/ame_candy.mp3' },
+          { label: 'あめ（雨）', file: 'audio/ame_rain.mp3' },
+        ] },
       ],
       quiz: [
         { q: '日語的母音有幾個？', opts: ['3 個', '5 個', '7 個', '10 個'], ans: 1 },
@@ -1535,7 +1540,10 @@ const App = {
         if (g.voice) {
           const items = Array.isArray(g.voice) ? g.voice : [g.voice];
           voiceBtns = `<div class="grammar-voice">` +
-            items.map((v, vi) => `<button class="voice-btn" data-w="${w.id}" data-g="${gi}" data-vi="${vi}">🔊 ${v}</button>`).join('') +
+            items.map((v, vi) => {
+              const label = typeof v === 'string' ? v : v.label;
+              return `<button class="voice-btn" data-w="${w.id}" data-g="${gi}" data-vi="${vi}">🔊 ${label}</button>`;
+            }).join('') +
             `</div>`;
         }
         html += `<div class="grammar-item">
@@ -1578,8 +1586,14 @@ const App = {
         const g = w.grammar[Number(btn.dataset.g)];
         if (!g) return;
         const items = Array.isArray(g.voice) ? g.voice : [g.voice];
-        const text = items[Number(btn.dataset.vi)].replace(/[（）].*$/g, '').trim();
-        this.speak(text);
+        const item = items[Number(btn.dataset.vi)];
+        if (typeof item === 'object' && item.file) {
+          const audioEl = document.getElementById('audioPlayer');
+          if (audioEl) { audioEl.src = item.file; audioEl.play(); }
+        } else {
+          const text = item.replace(/[（）].*$/g, '').trim();
+          this.speak(text);
+        }
       });
     });
   },
@@ -1773,5 +1787,6 @@ const App = {
 
 document.addEventListener('DOMContentLoaded', () => App.init());
 </script>
+<audio id="audioPlayer" preload="auto" style="display:none"></audio>
 </body>
 </html>
