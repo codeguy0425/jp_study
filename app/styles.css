@@ -695,7 +695,6 @@ body {
 
 /* ─── responsive ─── */
 @media (max-width: 480px) {
-  .kana-grid { grid-template-columns: repeat(4, 1fr); }
   .kana-cell .char { font-size: 18px; }
   .kana-cell { padding: 6px; }
   .home-stats { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-sm); }
@@ -713,7 +712,6 @@ body {
   .hero h1 { font-size: 28px; }
 }
 @media (max-width: 380px) {
-  .kana-grid { grid-template-columns: repeat(3, 1fr); }
   .kana-cell .char { font-size: 16px; }
   .kana-cell { padding: 4px; }
   .home-stats { grid-template-columns: 1fr; }
