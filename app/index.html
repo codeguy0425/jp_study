@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>日語入門 · 互動課程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #150f23;
+  --ink-deep: #1f1633;
+  --accent-lime: #c2ef4e;
+  --accent-pink: #fa7faa;
+  --accent-violet-mid: #79628c;
+  --accent-violet-deep: #422082;
+  --surface-canvas-dark: #1f1633;
+  --surface-night: #150f23;
+  --on-primary: #ffffff;
+  --on-dark-muted: rgba(255,255,255,0.72);
+  --on-dark-faint: rgba(255,255,255,0.18);
+  --hairline-violet: #362d59;
+  --font-ui: 'Rubik', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --tab-height: 64px;
+  --header-height: 52px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --rounded-xs: 4px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 10px;
+  --rounded-xl: 12px;
+  --rounded-xxl: 18px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+body {
+  font-family: var(--font-ui);
+  background: var(--surface-canvas-dark);
+  color: var(--on-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── header ─── */
+.app-header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  background: var(--surface-canvas-dark);
+  border-bottom: 1px solid var(--hairline-violet);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.app-header .back-btn {
+  background: none;
+  border: none;
+  color: var(--on-primary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
+  display: none;
+  line-height: 1;
+}
+.app-header .back-btn.visible { display: block; }
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  flex: 1;
+}
+.app-header h1 span { color: var(--accent-lime); }
+
+/* ─── main content ─── */
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: var(--spacing-lg);
+}
+.app-main::-webkit-scrollbar { width: 4px; }
+.app-main::-webkit-scrollbar-track { background: transparent; }
+.app-main::-webkit-scrollbar-thumb { background: var(--hairline-violet); border-radius: 4px; }
+
+/* ─── bottom tabs ─── */
+.app-tabs {
+  height: var(--tab-height);
+  display: flex;
+  background: var(--surface-night);
+  border-top: 1px solid var(--hairline-violet);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: var(--on-dark-muted);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 6px 0;
+  min-height: 48px;
+  transition: color .2s;
+  position: relative;
+}
+.tab-btn .tab-icon { font-size: 20px; line-height: 1; }
+.tab-btn.active { color: var(--accent-lime); }
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: var(--accent-lime);
+  border-radius: 0 0 2px 2px;
+}
+
+/* ─── views ─── */
+.view { display: none; padding: var(--spacing-lg); animation: fadeUp .25s ease; }
+.view.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── home view ─── */
+.home-hero {
+  text-align: center;
+  padding: var(--spacing-xxl) 0;
+}
+.home-hero .greeting { font-size: 13px; color: var(--on-dark-muted); text-transform: uppercase; letter-spacing: 0.2px; margin-bottom: var(--spacing-sm); }
+.home-hero h2 { font-size: 26px; font-weight: 600; margin-bottom: var(--spacing-xs); }
+.home-hero h2 .hl { color: var(--accent-lime); }
+.home-hero p { color: var(--on-dark-muted); font-size: 14px; line-height: 1.7; }
+.progress-ring-wrap {
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-xl) 0;
+}
+.progress-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.progress-ring svg { transform: rotate(-90deg); }
+.progress-ring .ring-bg { fill: none; stroke: var(--hairline-violet); stroke-width: 6; }
+.progress-ring .ring-fg { fill: none; stroke: var(--accent-lime); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .6s ease; }
+.progress-ring .ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.progress-ring .ring-label .pct { font-size: 28px; font-weight: 700; color: var(--accent-lime); }
+.progress-ring .ring-label .sub { font-size: 11px; color: var(--on-dark-muted); }
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+.stat-card {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+.stat-card .num { font-size: 22px; font-weight: 700; color: var(--accent-lime); }
+.stat-card .lbl { font-size: 11px; color: var(--on-dark-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.2px; }
+
+/* ─── lesson list ─── */
+.lesson-list { display: flex; flex-direction: column; gap: var(--spacing-md); padding-top: var(--spacing-sm); }
+.lesson-card {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+.lesson-card:active { background: var(--ink-deep); }
+.lesson-card.completed { border-color: var(--accent-lime); }
+.lesson-card .badge {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--rounded-md);
+  background: var(--accent-violet-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-lime);
+}
+.lesson-card.completed .badge { background: var(--accent-lime); color: var(--primary); }
+.lesson-card .info { flex: 1; min-width: 0; }
+.lesson-card .info h3 { font-size: 15px; font-weight: 600; }
+.lesson-card .info p { font-size: 12px; color: var(--on-dark-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lesson-card .status-icon { font-size: 16px; color: var(--accent-lime); flex-shrink: 0; }
+
+/* ─── lesson detail ─── */
+.lesson-detail { display: none; }
+.lesson-detail.active { display: block; }
+.lesson-detail .section-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  color: var(--accent-lime);
+  margin: var(--spacing-xl) 0 var(--spacing-md);
+}
+.lesson-detail .section-title:first-child { margin-top: 0; }
+.lesson-detail .intro-text {
+  color: var(--on-dark-muted);
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ─── kana table ─── */
+.kana-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-sm);
+}
+.kana-cell {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-sm);
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.kana-cell:active { background: var(--accent-violet-deep); border-color: var(--accent-lime); }
+.kana-cell .char { font-size: 22px; font-weight: 600; display: block; line-height: 1.3; }
+.kana-cell .rom { font-size: 10px; color: var(--on-dark-muted); display: block; text-transform: lowercase; }
+
+/* ─── vocab list ─── */
+.vocab-list { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.vocab-item {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  transition: background .15s;
+}
+.vocab-item:active { background: var(--ink-deep); }
+.vocab-item .jp { font-size: 18px; font-weight: 500; flex-shrink: 0; min-width: 80px; }
+.vocab-item .romaji { font-size: 12px; color: var(--on-dark-muted); flex-shrink: 0; min-width: 70px; }
+.vocab-item .zh { font-size: 14px; color: var(--on-dark-muted); flex: 1; text-align: right; }
+.vocab-item .sound-btn {
+  flex-shrink: 0;
+  background: var(--accent-violet-deep);
+  border: none;
+  color: var(--on-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.vocab-item .sound-btn:active { background: var(--accent-lime); color: var(--primary); }
+
+/* ─── grammar ─── */
+.grammar-item {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+.grammar-item:last-child { margin-bottom: 0; }
+.grammar-item .pattern {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-lime);
+  margin-bottom: var(--spacing-xs);
+}
+.grammar-item .explain {
+  font-size: 13px;
+  color: var(--on-dark-muted);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-sm);
+}
+.grammar-item .example {
+  font-size: 15px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--ink-deep);
+  border-radius: var(--rounded-sm);
+  display: inline-block;
+}
+.grammar-item .example .eg-zh { font-size: 12px; color: var(--on-dark-muted); display: block; margin-top: 2px; }
+
+/* ─── quiz ─── */
+.quiz-view { padding: var(--spacing-lg); }
+.quiz-header {
+  margin-bottom: var(--spacing-xl);
+}
+.quiz-header h2 { font-size: 20px; font-weight: 600; margin-bottom: var(--spacing-xs); }
+.quiz-header .quiz-meta { color: var(--on-dark-muted); font-size: 13px; }
+.quiz-question {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+.quiz-question .q-num {
+  font-size: 12px;
+  color: var(--accent-lime);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  margin-bottom: var(--spacing-sm);
+}
+.quiz-question .q-text {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+.quiz-question .q-text .q-jp { font-size: 22px; display: block; margin-top: var(--spacing-xs); }
+.quiz-options { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.quiz-option {
+  background: var(--ink-deep);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 15px;
+  font-family: var(--font-ui);
+  color: var(--on-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, border-color .15s;
+}
+.quiz-option:active { background: var(--accent-violet-deep); }
+.quiz-option.selected { border-color: var(--accent-lime); background: rgba(194,239,78,0.1); }
+.quiz-option.correct { border-color: var(--accent-lime); background: rgba(194,239,78,0.15); }
+.quiz-option.wrong { border-color: var(--accent-pink); background: rgba(250,127,170,0.1); }
+.quiz-option:disabled { cursor: default; opacity: 0.7; }
+.quiz-option.correct:disabled { opacity: 1; }
+.quiz-option .opt-label {
+  font-size: 11px;
+  color: var(--on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  margin-right: var(--spacing-sm);
+}
+.quiz-submit {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--accent-lime);
+  color: var(--primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  border: none;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition: opacity .2s;
+  margin-top: var(--spacing-lg);
+}
+.quiz-submit:disabled { opacity: 0.4; cursor: default; }
+.quiz-submit:active:not(:disabled) { opacity: 0.8; }
+.quiz-result {
+  text-align: center;
+  padding: var(--spacing-xxl);
+  background: var(--surface-night);
+  border: 2px solid var(--accent-lime);
+  border-radius: var(--rounded-xxl);
+  margin-top: var(--spacing-lg);
+}
+.quiz-result .score { font-size: 48px; font-weight: 700; color: var(--accent-lime); }
+.quiz-result .score-label { font-size: 14px; color: var(--on-dark-muted); }
+.quiz-result .msg { margin-top: var(--spacing-md); font-size: 15px; }
+
+/* ─── progress view ─── */
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+.progress-card {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+.progress-card .big { font-size: 28px; font-weight: 700; color: var(--accent-lime); }
+.progress-card .lbl { font-size: 11px; color: var(--on-dark-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.2px; }
+.progress-detail { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+}
+.progress-row .p-name { flex: 1; font-size: 14px; }
+.progress-row .p-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--ink-deep);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-row .p-bar .fill {
+  height: 100%;
+  background: var(--accent-lime);
+  border-radius: 3px;
+  transition: width .4s ease;
+}
+.progress-row .p-score { font-size: 13px; font-weight: 600; color: var(--accent-lime); min-width: 36px; text-align: right; }
+.progress-row .p-status { font-size: 14px; }
+
+/* ─── empty state ─── */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xxl) 0;
+  color: var(--on-dark-muted);
+}
+.empty-state .icon { font-size: 40px; margin-bottom: var(--spacing-lg); display: block; }
+.empty-state p { font-size: 14px; line-height: 1.6; }
+
+/* ─── flashcard ─── */
+.flashcard-filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+.fc-filter-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-xl);
+  background: var(--surface-night);
+  color: var(--on-dark-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+}
+.fc-filter-btn.active {
+  background: var(--accent-lime);
+  color: var(--primary);
+  border-color: var(--accent-lime);
+  font-weight: 600;
+}
+.fc-filter-btn:active { opacity: 0.8; }
+.flashcard-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-lg) 0;
+}
+.flashcard-counter {
+  font-size: 13px;
+  color: var(--on-dark-muted);
+  margin-bottom: var(--spacing-lg);
+  letter-spacing: 0.2px;
+}
+.flashcard {
+  width: 240px;
+  height: 280px;
+  perspective: 600px;
+  cursor: pointer;
+  margin-bottom: var(--spacing-lg);
+}
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform .5s ease;
+  transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rounded-xxl);
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+.flashcard-front {
+  background: var(--accent-violet-deep);
+  border: 2px solid var(--hairline-violet);
+}
+.flashcard-back {
+  background: var(--surface-night);
+  border: 2px solid var(--accent-lime);
+  transform: rotateY(180deg);
+}
+.flashcard-front .fc-char { font-size: 80px; font-weight: 700; line-height: 1; }
+.flashcard-front .fc-label { font-size: 12px; color: var(--on-dark-muted); margin-top: var(--spacing-md); text-transform: uppercase; letter-spacing: 0.2px; }
+.flashcard-back .fc-char { font-size: 64px; font-weight: 700; line-height: 1; }
+.flashcard-back .fc-rom { font-size: 28px; font-weight: 500; color: var(--accent-lime); margin-top: var(--spacing-md); }
+.flashcard-back .fc-label { font-size: 12px; color: var(--on-dark-muted); margin-top: var(--spacing-xs); }
+.flashcard-hint { font-size: 13px; color: var(--on-dark-muted); margin-bottom: var(--spacing-lg); }
+.flashcard-actions {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+.flashcard-actions button {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--hairline-violet);
+  background: var(--surface-night);
+  color: var(--on-primary);
+  font-size: 28px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flashcard-actions button:active { background: var(--ink-deep); }
+.flashcard-actions .btn-known { border-color: var(--accent-lime); }
+.flashcard-actions .btn-known:active { background: rgba(194,239,78,0.15); }
+.flashcard-actions .btn-unknown:active { background: rgba(250,127,170,0.1); border-color: var(--accent-pink); }
+.flashcard-next-btn {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin: var(--spacing-lg) auto 0;
+  padding: var(--spacing-md);
+  background: var(--ink-deep);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-md);
+  color: var(--on-dark-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.flashcard-next-btn:active { background: var(--accent-violet-deep); border-color: var(--accent-lime); color: var(--on-primary); }
+.flashcard-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+}
+.fc-nav-btn {
+  background: var(--ink-deep);
+  border: 1px solid var(--hairline-violet);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: var(--on-primary);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.fc-nav-btn:active { background: var(--accent-violet-deep); }
+.fc-nav-btn:disabled { opacity: 0.3; cursor: default; }
+.fc-nav-label {
+  font-size: 13px;
+  color: var(--on-dark-muted);
+  letter-spacing: 0.2px;
+  min-width: 100px;
+  text-align: center;
+}
+.flashcard-nav-bottom {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+  width: 100%;
+}
+.flashcard-key-hint {
+  font-size: 11px;
+  color: var(--on-dark-faint);
+  margin-top: var(--spacing-md);
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+.flashcard-wrap.swiping { transition: transform .05s linear; }
+
+/* ─── scrollbar for lesson list ─── */
+.lesson-scroll { max-height: calc(100dvh - var(--header-height) - var(--tab-height) - 48px); overflow-y: auto; }
+
+/* ─── responsive ─── */
+@media (max-width: 480px) {
+  .kana-grid { grid-template-columns: repeat(4, 1fr); }
+  .kana-cell .char { font-size: 18px; }
+  .kana-cell { padding: 6px; }
+  .home-stats { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-sm); }
+  .stat-card { padding: var(--spacing-md); }
+  .stat-card .num { font-size: 18px; }
+  .home-hero h2 { font-size: 22px; }
+  .progress-grid { gap: var(--spacing-sm); }
+  .progress-card { padding: var(--spacing-md); }
+  .progress-card .big { font-size: 22px; }
+  .vocab-item { flex-wrap: wrap; gap: var(--spacing-sm); }
+  .vocab-item .jp { min-width: auto; font-size: 16px; }
+  .vocab-item .romaji { min-width: auto; font-size: 11px; }
+  .vocab-item .zh { width: 100%; text-align: left; font-size: 13px; }
+  .week-card { padding: var(--spacing-lg); }
+  .hero h1 { font-size: 28px; }
+}
+@media (max-width: 380px) {
+  .kana-grid { grid-template-columns: repeat(3, 1fr); }
+  .kana-cell .char { font-size: 16px; }
+  .kana-cell { padding: 4px; }
+  .home-stats { grid-template-columns: 1fr; }
+  .progress-grid { grid-template-columns: 1fr; }
+  .tab-btn { font-size: 9px; }
+  .tab-btn .tab-icon { font-size: 18px; }
+  .lesson-card { padding: var(--spacing-md); gap: var(--spacing-md); }
+  .lesson-card .badge { width: 40px; height: 40px; font-size: 15px; }
+  .quiz-question { padding: var(--spacing-lg); }
+}
+</style>
+</head>
+<body>
+
+<!-- header -->
+<header class="app-header">
+  <button class="back-btn" id="backBtn" onclick="App.goBack()">←</button>
+  <h1><span>日</span>語教室</h1>
+</header>
+
+<!-- main -->
+<main class="app-main" id="appMain">
+
+  <!-- home -->
+  <div class="view active" id="viewHome">
+    <div class="home-hero">
+      <p class="greeting">日本語 入門コース</p>
+      <h2>ようこそ！<br>日語<span class="hl">入門</span>教室</h2>
+      <p>從零開始 · 8 週學會日常會話</p>
+    </div>
+    <div class="progress-ring-wrap">
+      <div class="progress-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle class="ring-bg" cx="60" cy="60" r="50"/>
+          <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+        </svg>
+        <div class="ring-label">
+          <span class="pct" id="ringPct">0%</span>
+          <span class="sub">完成度</span>
+        </div>
+      </div>
+    </div>
+    <div class="home-stats">
+      <div class="stat-card"><div class="num" id="statLessons">0</div><div class="lbl">已上課</div></div>
+      <div class="stat-card"><div class="num" id="statQuizzes">0</div><div class="lbl">測驗數</div></div>
+      <div class="stat-card"><div class="num" id="statAvg">-</div><div class="lbl">平均分</div></div>
+    </div>
+  </div>
+
+  <!-- lessons -->
+  <div class="view" id="viewLessons">
+    <div id="lessonList"></div>
+    <div id="lessonDetail" class="lesson-detail"></div>
+  </div>
+
+  <!-- quiz -->
+  <div class="view" id="viewQuiz">
+    <div id="quizContent"></div>
+  </div>
+
+  <!-- progress -->
+  <div class="view" id="viewProgress">
+    <div id="progressContent"></div>
+  </div>
+
+</main>
+
+<!-- tabs -->
+<nav class="app-tabs">
+  <button class="tab-btn active" data-tab="home" onclick="App.switchTab('home')">
+    <span class="tab-icon">🏠</span> 首頁
+  </button>
+  <button class="tab-btn" data-tab="lessons" onclick="App.switchTab('lessons')">
+    <span class="tab-icon">📖</span> 課程
+  </button>
+  <button class="tab-btn" data-tab="quiz" onclick="App.switchTab('quiz')">
+    <span class="tab-icon">✍️</span> 測驗
+  </button>
+  <button class="tab-btn" data-tab="progress" onclick="App.switchTab('progress')">
+    <span class="tab-icon">📊</span> 進度
+  </button>
+</nav>
+
+<script>
+const COURSE = {
+  weeks: [
+    {
+      id: 1,
+      title: '日語概論 · 發音基礎',
+      topics: '假名起源 · 母音あいうえお · 子音 · 聲調入門',
+      intro: '日語使用三種文字：平假名（ひらがな）、片假名（カタカナ）、漢字。本課先學習發音基礎——50 音圖的母音部分，這是所有日語發音的根源。',
+      kana: [
+        { char: 'あ', rom: 'a', zh: '啊' },
+        { char: 'い', rom: 'i', zh: '以' },
+        { char: 'う', rom: 'u', zh: '烏' },
+        { char: 'え', rom: 'e', zh: '埃' },
+        { char: 'お', rom: 'o', zh: '喔' },
+      ],
+      vocab: [
+        { jp: 'あう', rom: 'au', zh: '見面' },
+        { jp: 'いえ', rom: 'ie', zh: '房子' },
+        { jp: 'うえ', rom: 'ue', zh: '上面' },
+        { jp: 'え', rom: 'e', zh: '畫' },
+        { jp: 'おう', rom: 'ou', zh: '追趕' },
+      ],
+      grammar: [
+        { pattern: '日語發音特色', explain: '日語每個假名都是一個「拍」（mora），長度相等。母音有五個：あ・い・う・え・お。', example: 'あ い う え お（a-i-u-e-o）' },
+        { pattern: '聲調（アクセント）', explain: '日語有高低聲調，同一個單字聲調不同意思就不同。例如「はし」可以是「橋」或「箸」。', example: 'はし①（箸·筷子）vs はし②（橋）' },
+      ],
+      quiz: [
+        { q: '日語的母音有幾個？', opts: ['3 個', '5 個', '7 個', '10 個'], ans: 1 },
+        { q: '「あ」的正確發音是？', opts: ['i', 'u', 'a', 'e'], ans: 2 },
+        { q: '「いえ」的意思是？', opts: ['上面', '房子', '見面', '畫'], ans: 1 },
+        { q: '日語中「拍」(mora) 的特性是？', opts: ['長度不均', '每個假名長度相等', '只有母音算一拍', '子音不算拍'], ans: 1 },
+        { q: '「う」的羅馬拼音是？', opts: ['a', 'i', 'u', 'e'], ans: 2 },
+      ]
+    },
+    {
+      id: 2,
+      title: '平假名（上）',
+      topics: 'あ行～な行 · 清音 25 字 · 筆順 · 聽音辨字',
+      intro: '本課學習平假名的前五列：あ行・か行・さ行・た行・な行，共 25 個清音。這是日語書寫的基礎。',
+      kana: [
+        { char: 'あ', rom: 'a', zh: '啊' }, { char: 'い', rom: 'i', zh: '以' }, { char: 'う', rom: 'u', zh: '烏' }, { char: 'え', rom: 'e', zh: '埃' }, { char: 'お', rom: 'o', zh: '喔' },
+        { char: 'か', rom: 'ka', zh: '卡' }, { char: 'き', rom: 'ki', zh: '奇' }, { char: 'く', rom: 'ku', zh: '庫' }, { char: 'け', rom: 'ke', zh: '凱' }, { char: 'こ', rom: 'ko', zh: '口' },
+        { char: 'さ', rom: 'sa', zh: '沙' }, { char: 'し', rom: 'shi', zh: '西' }, { char: 'す', rom: 'su', zh: '斯' }, { char: 'せ', rom: 'se', zh: '塞' }, { char: 'そ', rom: 'so', zh: '索' },
+        { char: 'た', rom: 'ta', zh: '他' }, { char: 'ち', rom: 'chi', zh: '七' }, { char: 'つ', rom: 'tsu', zh: '次' }, { char: 'て', rom: 'te', zh: '帖' }, { char: 'と', rom: 'to', zh: '透' },
+        { char: 'な', rom: 'na', zh: '那' }, { char: 'に', rom: 'ni', zh: '尼' }, { char: 'ぬ', rom: 'nu', zh: '努' }, { char: 'ね', rom: 'ne', zh: '內' }, { char: 'の', rom: 'no', zh: '諾' },
+      ],
+      vocab: [
+        { jp: 'かさ', rom: 'kasa', zh: '雨傘' },
+        { jp: 'くし', rom: 'kushi', zh: '梳子' },
+        { jp: 'すし', rom: 'sushi', zh: '壽司' },
+        { jp: 'そと', rom: 'soto', zh: '外面' },
+        { jp: 'なか', rom: 'naka', zh: '裡面' },
+      ],
+      grammar: [
+        { pattern: '清音（せいおん）', explain: '不含濁音記號「゛」的假名稱為清音。平假名共有 45 個清音 + 1 個ん。', example: 'か・き・く・け・こ 都是清音' },
+        { pattern: '羅馬拼音輸入法', explain: '用鍵盤輸入日語時，依照羅馬拼音輸入。注意「し」= shi、「ち」= chi、「つ」= tsu。', example: 'さようなら → sayounara' },
+      ],
+      quiz: [
+        { q: '「か」的羅馬拼音是？', opts: ['ka', 'ga', 'sa', 'ta'], ans: 0 },
+        { q: '「すし」的意思是？', opts: ['梳子', '外面', '壽司', '雨傘'], ans: 2 },
+        { q: '「し」的羅馬拼音是？', opts: ['si', 'shi', 'chi', 'tsu'], ans: 1 },
+        { q: '「つ」的羅馬拼音是？', opts: ['tu', 'tsu', 'chu', 'su'], ans: 1 },
+        { q: '「なか」的意思是？', opts: ['外面', '裡面', '雨傘', '梳子'], ans: 1 },
+      ]
+    },
+    {
+      id: 3,
+      title: '平假名（下）',
+      topics: 'は行～わ行・ん · 濁音 · 半濁音 · 拗音',
+      intro: '本課完成平假名的學習：は行・ま行・や行・ら行・わ行，加上ん。同時學習濁音、半濁音與拗音。',
+      kana: [
+        { char: 'は', rom: 'ha', zh: '哈' }, { char: 'ひ', rom: 'hi', zh: '嘻' }, { char: 'ふ', rom: 'fu', zh: '夫' }, { char: 'へ', rom: 'he', zh: '嘿' }, { char: 'ほ', rom: 'ho', zh: '吼' },
+        { char: 'ま', rom: 'ma', zh: '媽' }, { char: 'み', rom: 'mi', zh: '咪' }, { char: 'む', rom: 'mu', zh: '木' }, { char: 'め', rom: 'me', zh: '咩' }, { char: 'も', rom: 'mo', zh: '摸' },
+        { char: 'や', rom: 'ya', zh: '呀' }, { char: 'ゆ', rom: 'yu', zh: '優' }, { char: 'よ', rom: 'yo', zh: '喲' },
+        { char: 'ら', rom: 'ra', zh: '拉' }, { char: 'り', rom: 'ri', zh: '哩' }, { char: 'る', rom: 'ru', zh: '嚕' }, { char: 'れ', rom: 're', zh: '咧' }, { char: 'ろ', rom: 'ro', zh: '囉' },
+        { char: 'わ', rom: 'wa', zh: '哇' }, { char: 'を', rom: 'wo', zh: '喔' }, { char: 'ん', rom: 'n', zh: '嗯' },
+        { char: 'が', rom: 'ga', zh: '嘎' }, { char: 'ぎ', rom: 'gi', zh: '姬' }, { char: 'ぐ', rom: 'gu', zh: '古' }, { char: 'げ', rom: 'ge', zh: '給' }, { char: 'ご', rom: 'go', zh: '夠' },
+        { char: 'ぱ', rom: 'pa', zh: '趴' }, { char: 'ぴ', rom: 'pi', zh: '批' }, { char: 'ぷ', rom: 'pu', zh: '普' }, { char: 'ぺ', rom: 'pe', zh: '佩' }, { char: 'ぽ', rom: 'po', zh: '剖' },
+        { char: 'きゃ', rom: 'kya', zh: '奇亞' }, { char: 'きゅ', rom: 'kyu', zh: '奇優' }, { char: 'きょ', rom: 'kyo', zh: '奇喲' },
+        { char: 'しゃ', rom: 'sha', zh: '夏' }, { char: 'しゅ', rom: 'shu', zh: '休' }, { char: 'しょ', rom: 'sho', zh: '蕭' },
+        { char: 'ちゃ', rom: 'cha', zh: '洽' }, { char: 'ちゅ', rom: 'chu', zh: '秋' }, { char: 'ちょ', rom: 'cho', zh: '翹' },
+        { char: 'にゃ', rom: 'nya', zh: '尼亞' }, { char: 'にゅ', rom: 'nyu', zh: '紐' }, { char: 'にょ', rom: 'nyo', zh: '尼歐' },
+        { char: 'ひゃ', rom: 'hya', zh: '希亞' }, { char: 'ひゅ', rom: 'hyu', zh: '休' }, { char: 'ひょ', rom: 'hyo', zh: '希歐' },
+        { char: 'みゃ', rom: 'mya', zh: '咪亞' }, { char: 'みゅ', rom: 'myu', zh: '謬' }, { char: 'みょ', rom: 'myo', zh: '咪歐' },
+        { char: 'りゃ', rom: 'rya', zh: '利亞' }, { char: 'りゅ', rom: 'ryu', zh: '琉' }, { char: 'りょ', rom: 'ryo', zh: '料' },
+      ],
+      vocab: [
+        { jp: 'はは', rom: 'haha', zh: '母親' },
+        { jp: 'やま', rom: 'yama', zh: '山' },
+        { jp: 'くるま', rom: 'kuruma', zh: '車子' },
+        { jp: 'がくせい', rom: 'gakusei', zh: '學生' },
+        { jp: 'りょこう', rom: 'ryokou', zh: '旅行' },
+      ],
+      grammar: [
+        { pattern: '濁音（だくおん）', explain: '在清音右上角加上「゛」即為濁音。か→が、さ→ざ、た→だ、は→ば。', example: 'か（ka）→ が（ga）' },
+        { pattern: '半濁音（はんだくおん）', explain: '在は行右上角加上「゜」即為半濁音。は→ぱ、ひ→ぴ、ふ→ぷ、へ→ぺ、ほ→ぽ。', example: 'は（ha）→ ぱ（pa）' },
+        { pattern: '拗音（ようおん）', explain: 'い段假名 + 小寫や・ゆ・よ 組成一個音節。如 き + ゃ → きゃ（kya）。', example: 'きゃ（kya）· きゅ（kyu）· きょ（kyo）' },
+      ],
+      quiz: [
+        { q: '「はは」的意思是？', opts: ['母親', '父親', '山', '車子'], ans: 0 },
+        { q: '濁音記號是什麼？', opts: ['゜', '゛', 'ー', 'っ'], ans: 1 },
+        { q: '「くるま」的意思是？', opts: ['山', '學生', '車子', '旅行'], ans: 2 },
+        { q: '「りょこう」的羅馬拼音是？', opts: ['ryokou', 'ryokoo', 'ryoukou', 'riyokou'], ans: 0 },
+        { q: '拗音是哪些假名的組合？', opts: ['あ段+やゆよ', 'い段+やゆよ', 'う段+やゆよ', 'え段+やゆよ'], ans: 1 },
+      ]
+    },
+    {
+      id: 4,
+      title: '片假名 · 外來語',
+      topics: 'ア行～ワ行・ン · 濁音半濁音 · 長音促音 · 外來語規則',
+      intro: '片假名主要用於書寫外來語、擬聲語、強調詞語。本課學習全部片假名，以及外來語的特殊書寫規則。',
+      kana: [
+        { char: 'ア', rom: 'a', zh: '阿' }, { char: 'イ', rom: 'i', zh: '伊' }, { char: 'ウ', rom: 'u', zh: '烏' }, { char: 'エ', rom: 'e', zh: '埃' }, { char: 'オ', rom: 'o', zh: '歐' },
+        { char: 'カ', rom: 'ka', zh: '卡' }, { char: 'キ', rom: 'ki', zh: '奇' }, { char: 'ク', rom: 'ku', zh: '庫' }, { char: 'ケ', rom: 'ke', zh: '凱' }, { char: 'コ', rom: 'ko', zh: '口' },
+        { char: 'サ', rom: 'sa', zh: '沙' }, { char: 'シ', rom: 'shi', zh: '西' }, { char: 'ス', rom: 'su', zh: '斯' }, { char: 'セ', rom: 'se', zh: '塞' }, { char: 'ソ', rom: 'so', zh: '索' },
+        { char: 'タ', rom: 'ta', zh: '他' }, { char: 'チ', rom: 'chi', zh: '七' }, { char: 'ツ', rom: 'tsu', zh: '次' }, { char: 'テ', rom: 'te', zh: '帖' }, { char: 'ト', rom: 'to', zh: '透' },
+        { char: 'ナ', rom: 'na', zh: '那' }, { char: 'ニ', rom: 'ni', zh: '尼' }, { char: 'ヌ', rom: 'nu', zh: '努' }, { char: 'ネ', rom: 'ne', zh: '內' }, { char: 'ノ', rom: 'no', zh: '諾' },
+        { char: 'ハ', rom: 'ha', zh: '哈' }, { char: 'ヒ', rom: 'hi', zh: '嘻' }, { char: 'フ', rom: 'fu', zh: '夫' }, { char: 'ヘ', rom: 'he', zh: '嘿' }, { char: 'ホ', rom: 'ho', zh: '吼' },
+        { char: 'マ', rom: 'ma', zh: '媽' }, { char: 'ミ', rom: 'mi', zh: '咪' }, { char: 'ム', rom: 'mu', zh: '木' }, { char: 'メ', rom: 'me', zh: '咩' }, { char: 'モ', rom: 'mo', zh: '摸' },
+        { char: 'ヤ', rom: 'ya', zh: '呀' }, { char: 'ユ', rom: 'yu', zh: '優' }, { char: 'ヨ', rom: 'yo', zh: '喲' },
+        { char: 'ラ', rom: 'ra', zh: '拉' }, { char: 'リ', rom: 'ri', zh: '哩' }, { char: 'ル', rom: 'ru', zh: '嚕' }, { char: 'レ', rom: 're', zh: '咧' }, { char: 'ロ', rom: 'ro', zh: '囉' },
+        { char: 'ワ', rom: 'wa', zh: '哇' }, { char: 'ヲ', rom: 'wo', zh: '喔' }, { char: 'ン', rom: 'n', zh: '嗯' },
+        { char: 'ガ', rom: 'ga', zh: '嘎' }, { char: 'ギ', rom: 'gi', zh: '姬' }, { char: 'グ', rom: 'gu', zh: '古' }, { char: 'ゲ', rom: 'ge', zh: '給' }, { char: 'ゴ', rom: 'go', zh: '夠' },
+        { char: 'パ', rom: 'pa', zh: '趴' }, { char: 'ピ', rom: 'pi', zh: '批' }, { char: 'プ', rom: 'pu', zh: '普' }, { char: 'ペ', rom: 'pe', zh: '佩' }, { char: 'ポ', rom: 'po', zh: '剖' },
+        { char: 'キャ', rom: 'kya' }, { char: 'キュ', rom: 'kyu' }, { char: 'キョ', rom: 'kyo' },
+        { char: 'シャ', rom: 'sha' }, { char: 'シュ', rom: 'shu' }, { char: 'ショ', rom: 'sho' },
+        { char: 'チャ', rom: 'cha' }, { char: 'チュ', rom: 'chu' }, { char: 'チョ', rom: 'cho' },
+      ],
+      vocab: [
+        { jp: 'コーヒー', rom: 'koohii', zh: '咖啡' },
+        { jp: 'タクシー', rom: 'takushii', zh: '計程車' },
+        { jp: 'ホテル', rom: 'hoteru', zh: '飯店' },
+        { jp: 'レストラン', rom: 'resutoran', zh: '餐廳' },
+        { jp: 'コンピューター', rom: 'konpyuutaa', zh: '電腦' },
+      ],
+      grammar: [
+        { pattern: '長音（ちょうおん）', explain: '用「ー」符號表示延長一個音節。例如 コーヒー（koohii）中的「ー」代表長音。', example: 'コーヒー（koohii · 咖啡）' },
+        { pattern: '促音（そくおん）', explain: '用小寫「ッ」表示停頓一拍。例如 ベッド（beddo · 床）。', example: 'ベッド（beddo）vs ベド（bedo）' },
+        { pattern: '外來語書寫規則', explain: '外來語依據原語發音用最接近的片假名書寫，有時會使用特殊組合如 ティ（ti）、ディ（di）。', example: 'パーティー（paatii · 派對）' },
+      ],
+      quiz: [
+        { q: '「コーヒー」的意思是？', opts: ['可樂', '咖啡', '茶', '果汁'], ans: 1 },
+        { q: '片假名的長音符號是？', opts: ['゛', '゜', 'ー', 'っ'], ans: 2 },
+        { q: '「ホテル」的意思是？', opts: ['餐廳', '飯店', '計程車', '電腦'], ans: 1 },
+        { q: '「レストラン」的原文是？', opts: ['restaurant', 'hotel', 'taxi', 'computer'], ans: 0 },
+        { q: '促音「ッ」的作用是？', opts: ['延長發音', '停頓一拍', '改變聲調', '濁化'], ans: 1 },
+      ]
+    },
+    {
+      id: 5,
+      title: '基本問候 · 自我介紹',
+      topics: 'ですます體 · 禮貌用語 · 數字 1～100 · 自我介紹',
+      intro: '本課學習日語最基本的禮貌用語和自我介绍方式。掌握です・ます體，讓你的日語聽起來得體有禮。',
+      kana: [],
+      vocab: [
+        { jp: 'おはようございます', rom: 'ohayou gozaimasu', zh: '早安（敬體）' },
+        { jp: 'こんにちは', rom: 'konnichiwa', zh: '你好（日間）' },
+        { jp: 'こんばんは', rom: 'konbanwa', zh: '晚安（晚間）' },
+        { jp: 'さようなら', rom: 'sayounara', zh: '再見' },
+        { jp: 'ありがとうございます', rom: 'arigatou gozaimasu', zh: '謝謝（敬體）' },
+        { jp: 'すみません', rom: 'sumimasen', zh: '不好意思/謝謝' },
+        { jp: 'はい', rom: 'hai', zh: '是' },
+        { jp: 'いいえ', rom: 'iie', zh: '不是' },
+        { jp: 'わたし', rom: 'watashi', zh: '我' },
+        { jp: '〜さん', rom: 'san', zh: '～先生/小姐' },
+      ],
+      grammar: [
+        { pattern: 'です（禮貌斷定）', explain: '「～です」相當於中文的「是～」，用於名詞句的禮貌表達。', example: 'わたしは がくせい です。（我是學生。）<span class="eg-zh">watashi wa gakusei desu.</span>' },
+        { pattern: 'ます（禮貌動詞）', explain: '動詞的禮貌形，加在動詞後。例如「食べる」→「食べます」。', example: 'コーヒーを 飲みます。（喝咖啡。）<span class="eg-zh">koohii wo nomimasu.</span>' },
+        { pattern: '自我介紹句型', explain: '「はじめまして、〜です。よろしくおねがいします。」是標準自我介紹流程。', example: 'はじめまして、田中です。よろしくおねがいします。<span class="eg-zh">Hajimemashite, Tanaka desu. Yoroshiku onegai shimasu.</span>' },
+        { pattern: '數字 1～10', explain: 'いち・に・さん・し/よん・ご・ろく・しち/なな・はち・きゅう・じゅう', example: '1（いち）· 2（に）· 3（さん）· 4（し/よん）· 5（ご）' },
+      ],
+      quiz: [
+        { q: '「こんにちは」用於何時？', opts: ['早上', '白天', '晚上', '任何時間'], ans: 1 },
+        { q: '「ありがとうございます」的意思是？', opts: ['對不起', '謝謝', '再見', '你好'], ans: 1 },
+        { q: '「すみません」不包含哪個意思？', opts: ['不好意思', '謝謝', '對不起', '早安'], ans: 3 },
+        { q: '自我介紹最後通常說？', opts: ['こんにちは', 'さようなら', 'よろしくおねがいします', 'すみません'], ans: 2 },
+        { q: '數字 3 的日語是？', opts: ['いち', 'に', 'さん', 'ご'], ans: 2 },
+      ]
+    },
+    {
+      id: 6,
+      title: '動詞與形容詞入門',
+      topics: '五段/一段動詞 · い形容詞/な形容詞 · 現在式否定形',
+      intro: '日語動詞分為五段動詞與一段動詞，形容詞分為い形容詞與な形容詞。本課學習基本變化規則。',
+      kana: [],
+      vocab: [
+        { jp: '食べる', rom: 'taberu', zh: '吃' },
+        { jp: '飲む', rom: 'nomu', zh: '喝' },
+        { jp: '行く', rom: 'iku', zh: '去' },
+        { jp: '来る', rom: 'kuru', zh: '來' },
+        { jp: '見る', rom: 'miru', zh: '看' },
+        { jp: '大きい', rom: 'ookii', zh: '大的' },
+        { jp: '小さい', rom: 'chiisai', zh: '小的' },
+        { jp: '高い', rom: 'takai', zh: '高的/貴的' },
+        { jp: '元気', rom: 'genki', zh: '有精神的' },
+        { jp: '好き', rom: 'suki', zh: '喜歡' },
+      ],
+      grammar: [
+        { pattern: '五段動詞（Godan）', explain: '結尾為 -u 段假名。變化較多：行く・飲む・買う 等。ます形：語尾變為相對い段 + ます。', example: '行く → 行きます（ikimasu）<span class="eg-zh">飲む → 飲みます（nomimasu）</span>' },
+        { pattern: '一段動詞（Ichidan）', explain: '結尾為 -eru 或 -iru。ます形：去掉る + ます。例：食べる → 食べます。', example: '食べる → 食べます（tabemasu）<span class="eg-zh">見る → 見ます（mimasu）</span>' },
+        { pattern: 'い形容詞', explain: '以「い」結尾的形容詞。否定形：去掉い + くない。例：大きい → 大きくない。', example: '高い（takai）→ 高くない（takakunai）<span class="eg-zh">這個山不高。</span>' },
+        { pattern: 'な形容詞', explain: '以「な」修飾名詞的形容詞。否定形：語幹 + ではない / じゃない。', example: '元気な人（genki na hito）→ 元気じゃない（genki janai）<span class="eg-zh">沒有精神</span>' },
+      ],
+      quiz: [
+        { q: '「食べる」是幾段動詞？', opts: ['五段', '一段', '不規則', '沒有段'], ans: 1 },
+        { q: '「行く」的ます形是？', opts: ['行きます', '行きます', '行きます', '行きます'], ans: 0 },
+        { q: '「高い」的否定形是？', opts: ['高くない', '高じゃない', '高くありません', '高くない'], ans: 0 },
+        { q: 'な形容詞修飾名詞要用哪個助詞？', opts: ['の', 'な', 'い', 'に'], ans: 1 },
+        { q: '「飲む」的意思？', opts: ['吃', '喝', '去', '看'], ans: 1 },
+      ]
+    },
+    {
+      id: 7,
+      title: '助詞與句型結構',
+      topics: 'は・が・を・に・で・へ · 疑問/否定/過去式',
+      intro: '助詞是日語句子的關鍵，決定名詞在句中的角色。本課學習核心助詞與基本句型變化。',
+      kana: [],
+      vocab: [
+        { jp: '学校', rom: 'gakkou', zh: '學校' },
+        { jp: '駅', rom: 'eki', zh: '車站' },
+        { jp: '公園', rom: 'kouen', zh: '公園' },
+        { jp: '本', rom: 'hon', zh: '書' },
+        { jp: '猫', rom: 'neko', zh: '貓' },
+        { jp: '昨日', rom: 'kinou', zh: '昨天' },
+        { jp: '今日', rom: 'kyou', zh: '今天' },
+        { jp: '明日', rom: 'ashita', zh: '明天' },
+        { jp: 'どこ', rom: 'doko', zh: '哪裡' },
+        { jp: 'いつ', rom: 'itsu', zh: '何時' },
+      ],
+      grammar: [
+        { pattern: 'は（主題標記）', explain: '標示句子的主題/話題，讀音為「wa」。', example: 'わたしは 学生です。（我是學生。）<span class="eg-zh">watashi wa gakusei desu.</span>' },
+        { pattern: 'が（主格標記）', explain: '標示主語，用於描述客觀事實或強調。', example: '猫が 好きです。（喜歡貓。）<span class="eg-zh">neko ga suki desu.</span>' },
+        { pattern: 'を（受格標記）', explain: '標示動作的受詞，讀音為「o」。', example: '本を 読みます。（讀書。）<span class="eg-zh">hon wo yomimasu.</span>' },
+        { pattern: 'に（目的地/時間）', explain: '標示動作的方向、到達點或時間點。', example: '学校に 行きます。（去學校。）<span class="eg-zh">gakkou ni ikimasu.</span>' },
+        { pattern: 'で（場所/手段）', explain: '標示動作發生的地點或使用的手段工具。', example: '公園で 遊びます。（在公園玩。）<span class="eg-zh">kouen de asobimasu.</span>' },
+        { pattern: '過去式', explain: 'です → でした（名詞句過去）。ます → ました（動詞過去）。', example: '昨日は 日曜日でした。（昨天是週日。）<span class="eg-zh">kinou wa nichiyoubi deshita.</span>' },
+      ],
+      quiz: [
+        { q: '助詞「は」的讀音是？', opts: ['ha', 'wa', 'ho', 'ba'], ans: 1 },
+        { q: '「を」標示句子的哪個成分？', opts: ['主語', '受詞', '時間', '地點'], ans: 1 },
+        { q: '「學校に行く」的「に」表示？', opts: ['地點', '方向/目的地', '手段', '時間'], ans: 1 },
+        { q: '「公園で遊ぶ」的「で」表示？', opts: ['方向', '手段', '動作地點', '時間'], ans: 2 },
+        { q: '「でした」是哪個字的過去式？', opts: ['ます', 'です', 'だ', 'いる'], ans: 1 },
+      ]
+    },
+    {
+      id: 8,
+      title: '日常會話 · 總複習',
+      topics: '購物 · 餐廳 · 問路 · 文法總整理 · 對話練習',
+      intro: '最後一課將所學應用於實際情境。透過購物、餐廳、問路等場景練習，並進行全課程總整理。',
+      kana: [],
+      vocab: [
+        { jp: 'いくら', rom: 'ikura', zh: '多少錢' },
+        { jp: 'メニュー', rom: 'menyuu', zh: '菜單' },
+        { jp: 'お願いします', rom: 'onegai shimasu', zh: '麻煩/請' },
+        { jp: 'いただきます', rom: 'itadakimasu', zh: '我開動了' },
+        { jp: 'おいしい', rom: 'oishii', zh: '好吃' },
+        { jp: 'ごちそうさまでした', rom: 'gochisousama deshita', zh: '多謝款待' },
+        { jp: '右', rom: 'migi', zh: '右邊' },
+        { jp: '左', rom: 'hidari', zh: '左邊' },
+        { jp: 'まっすぐ', rom: 'massugu', zh: '直走' },
+        { jp: 'お会計', rom: 'okaikei', zh: '結帳' },
+      ],
+      grammar: [
+        { pattern: '購物句型', explain: '「～を ください」（請給我～）是購物基本句型。詢問價格用「いくらですか」。', example: 'これを ください。（請給我這個。）<span class="eg-zh">kore wo kudasai.</span> いくらですか？（多少錢？）' },
+        { pattern: '餐廳句型', explain: '點餐用「～を お願いします」。稱讚食物用「おいしいです」。', example: 'すしを お願いします。（請給我壽司。）<span class="eg-zh">sushi wo onegai shimasu.</span>' },
+        { pattern: '問路句型', explain: '「〜は どこですか」（～在哪裡？）。回答用「右・左・まっすぐ」。', example: '駅は どこですか？（車站在哪裡？）<span class="eg-zh">eki wa doko desu ka?</span> まっすぐ行ってください。（請直走。）' },
+        { pattern: '總複習：です・ます表', explain: '現在肯定・現在否定・過去肯定・過去否定。', example: '学生です（是學生）→ 学生ではありません（不是學生）→ 学生でした（曾是學生）→ 学生ではありませんでした（不是學生）' },
+      ],
+      quiz: [
+        { q: '「いくらですか」是問什麼？', opts: ['在哪裡', '多少錢', '好吃嗎', '你是誰'], ans: 1 },
+        { q: '「おいしい」的意思是？', opts: ['難吃', '好吃', '便宜', '貴'], ans: 1 },
+        { q: '「まっすぐ行ってください」的意思是？', opts: ['請左轉', '請右轉', '請直走', '請停下'], ans: 2 },
+        { q: '點餐時可以說什麼？', opts: ['いくらですか', '〜を お願いします', '〜は どこですか', 'ありがとう'], ans: 1 },
+        { q: '「ごちそうさまでした」用於何時？', opts: ['吃飯前', '吃飯後', '出門前', '回家時'], ans: 1 },
+      ]
+    }
+  ]
+};
+
+const FLASH_KANA = [
+  { h: 'あ', k: 'ア', r: 'a' }, { h: 'い', k: 'イ', r: 'i' }, { h: 'う', k: 'ウ', r: 'u' }, { h: 'え', k: 'エ', r: 'e' }, { h: 'お', k: 'オ', r: 'o' },
+  { h: 'か', k: 'カ', r: 'ka' }, { h: 'き', k: 'キ', r: 'ki' }, { h: 'く', k: 'ク', r: 'ku' }, { h: 'け', k: 'ケ', r: 'ke' }, { h: 'こ', k: 'コ', r: 'ko' },
+  { h: 'さ', k: 'サ', r: 'sa' }, { h: 'し', k: 'シ', r: 'shi' }, { h: 'す', k: 'ス', r: 'su' }, { h: 'せ', k: 'セ', r: 'se' }, { h: 'そ', k: 'ソ', r: 'so' },
+  { h: 'た', k: 'タ', r: 'ta' }, { h: 'ち', k: 'チ', r: 'chi' }, { h: 'つ', k: 'ツ', r: 'tsu' }, { h: 'て', k: 'テ', r: 'te' }, { h: 'と', k: 'ト', r: 'to' },
+  { h: 'な', k: 'ナ', r: 'na' }, { h: 'に', k: 'ニ', r: 'ni' }, { h: 'ぬ', k: 'ヌ', r: 'nu' }, { h: 'ね', k: 'ネ', r: 'ne' }, { h: 'の', k: 'ノ', r: 'no' },
+  { h: 'は', k: 'ハ', r: 'ha' }, { h: 'ひ', k: 'ヒ', r: 'hi' }, { h: 'ふ', k: 'フ', r: 'fu' }, { h: 'へ', k: 'ヘ', r: 'he' }, { h: 'ほ', k: 'ホ', r: 'ho' },
+  { h: 'ま', k: 'マ', r: 'ma' }, { h: 'み', k: 'ミ', r: 'mi' }, { h: 'む', k: 'ム', r: 'mu' }, { h: 'め', k: 'メ', r: 'me' }, { h: 'も', k: 'モ', r: 'mo' },
+  { h: 'や', k: 'ヤ', r: 'ya' }, { h: 'ゆ', k: 'ユ', r: 'yu' }, { h: 'よ', k: 'ヨ', r: 'yo' },
+  { h: 'ら', k: 'ラ', r: 'ra' }, { h: 'り', k: 'リ', r: 'ri' }, { h: 'る', k: 'ル', r: 'ru' }, { h: 'れ', k: 'レ', r: 're' }, { h: 'ろ', k: 'ロ', r: 'ro' },
+  { h: 'わ', k: 'ワ', r: 'wa' }, { h: 'を', k: 'ヲ', r: 'wo' }, { h: 'ん', k: 'ン', r: 'n' },
+];
+
+const App = {
+  state: {
+    tab: 'home',
+    viewingWeek: null,
+    quizWeek: null,
+    quizSubmitted: false,
+    flashcardMode: false,
+    flashcardFilter: 'all',
+    flashcardDeck: [],
+    flashcardIdx: 0,
+    flashcardFlipped: false,
+    flashcardKnown: JSON.parse(localStorage.getItem('jp_flash_known') || '[]'),
+    done: JSON.parse(localStorage.getItem('jp_done') || '[]'),
+    scores: JSON.parse(localStorage.getItem('jp_scores') || '{}')
+  },
+
+  init() {
+    this.renderLessons();
+    this.renderProgress();
+    this.updateHomeStats();
+    document.addEventListener('keydown', e => {
+      if (!this.state.flashcardMode) return;
+      if (e.key === 'ArrowRight') { this.nextCard(); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { this.prevCard(); e.preventDefault(); }
+      if (e.key === ' ' || e.key === 'Space') { this.flipFlashcard(); e.preventDefault(); }
+    });
+  },
+
+  save() {
+    localStorage.setItem('jp_done', JSON.stringify(this.state.done));
+    localStorage.setItem('jp_scores', JSON.stringify(this.state.scores));
+    localStorage.setItem('jp_flash_known', JSON.stringify(this.state.flashcardKnown));
+    this.updateHomeStats();
+    this.renderProgress();
+    this.renderLessons();
+  },
+
+  switchTab(tab) {
+    this.state.tab = tab;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+    document.getElementById('backBtn').classList.remove('visible');
+    if (tab === 'lessons') { this.renderLessons(); }
+    if (tab === 'quiz') { this.renderQuiz(); }
+    if (tab === 'progress') { this.renderProgress(); }
+    document.getElementById('appMain').scrollTop = 0;
+  },
+
+  goBack() {
+    if (this.state.flashcardMode) {
+      this.state.flashcardMode = false;
+      this.state.flashcardFlipped = false;
+      this.renderQuiz();
+      document.getElementById('backBtn').classList.remove('visible');
+      return;
+    }
+    if (this.state.viewingWeek !== null) {
+      this.state.viewingWeek = null;
+      this.renderLessons();
+    } else if (this.state.quizWeek !== null) {
+      this.state.quizWeek = null;
+      this.state.quizSubmitted = false;
+      this.renderQuiz();
+    }
+  },
+
+  openLesson(id) {
+    this.state.viewingWeek = id;
+    const backBtn = document.getElementById('backBtn');
+    backBtn.classList.add('visible');
+    this.renderLessonDetail(id);
+    document.getElementById('appMain').scrollTop = 0;
+  },
+
+  /* ─── flashcard ─── */
+  buildDeck(filter) {
+    const cards = [];
+    FLASH_KANA.forEach(k => {
+      if (filter === 'all' || filter === 'hiragana') cards.push({ type: 'hiragana', char: k.h, rom: k.r });
+      if (filter === 'all' || filter === 'katakana') cards.push({ type: 'katakana', char: k.k, rom: k.r });
+    });
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    return cards;
+  },
+
+  openFlashcard(filter) {
+    this.state.flashcardFilter = filter || 'all';
+    this.state.flashcardDeck = this.buildDeck(this.state.flashcardFilter);
+    this.state.flashcardMode = true;
+    this.state.flashcardIdx = 0;
+    this.state.flashcardFlipped = false;
+    document.getElementById('backBtn').classList.add('visible');
+    this.renderFlashcard();
+  },
+
+  switchFlashcardFilter(filter) {
+    this.state.flashcardFilter = filter;
+    this.state.flashcardDeck = this.buildDeck(filter);
+    this.state.flashcardIdx = 0;
+    this.state.flashcardFlipped = false;
+    this.renderFlashcard();
+  },
+
+  renderFlashcard() {
+    const container = document.getElementById('quizContent');
+    const deck = this.state.flashcardDeck;
+    const total = deck.length;
+    const idx = this.state.flashcardIdx;
+    const card = deck[idx];
+    const knownKey = card.type === 'hiragana' ? 'h_' : 'k_' + card.rom;
+    const isKnown = this.state.flashcardKnown.includes(knownKey);
+    const isLast = idx + 1 >= total;
+
+    const filterLabels = { all: '全部', hiragana: '平假名', katakana: '片假名' };
+
+    let html = `<div class="flashcard-filter-bar">
+      ${Object.entries(filterLabels).map(([k, v]) =>
+        `<button class="fc-filter-btn${this.state.flashcardFilter === k ? ' active' : ''}" onclick="App.switchFlashcardFilter('${k}')">${v}</button>`
+      ).join('')}
+    </div>
+    <div class="flashcard-wrap">
+      <div class="flashcard-counter">${idx + 1} / ${total}</div>
+      <div class="flashcard-nav">
+        <button class="fc-nav-btn" onclick="App.prevCard()" ${idx === 0 ? 'disabled' : ''}>◀</button>
+        <span class="fc-nav-label">${card.type === 'hiragana' ? '平假名' : '片假名'} · ${card.rom}</span>
+        <button class="fc-nav-btn" onclick="App.nextCard()" ${isLast ? 'disabled' : ''}>▶</button>
+      </div>
+      <div class="flashcard${this.state.flashcardFlipped ? ' flipped' : ''}" onclick="App.flipFlashcard()">
+        <div class="flashcard-inner">
+          <div class="flashcard-face flashcard-front">
+            <div class="fc-char">${card.char}</div>
+            <div class="fc-label">${card.type === 'hiragana' ? '平假名' : '片假名'} · 點擊翻面</div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <div class="fc-char">${card.char}</div>
+            <div class="fc-rom">${card.rom}</div>
+            <div class="fc-label">${card.type === 'hiragana' ? '平假名' : '片假名'}</div>
+          </div>
+        </div>
+      </div>`;
+
+    if (this.state.flashcardFlipped) {
+      html += `<div class="flashcard-hint">記得了嗎？</div>
+        <div class="flashcard-actions">
+          <button class="btn-unknown" onclick="App.flashcardResult(false)" title="還不熟">✗</button>
+          <button class="btn-known" onclick="App.flashcardResult(true)" title="記得了">✓</button>
+        </div>`;
+    }
+
+    html += `<div class="flashcard-nav-bottom">
+        <button class="flashcard-next-btn" onclick="App.nextCard()" ${isLast ? 'disabled' : ''}>→ 下一張</button>
+      </div>
+      <div class="flashcard-key-hint">鍵盤快捷：← 上一張 · → 下一張 · 空白鍵翻面</div>
+    </div>`;
+    container.innerHTML = html;
+
+    const wrap = container.querySelector('.flashcard-wrap');
+    if (wrap) {
+      wrap.addEventListener('touchstart', e => { App._swipeX = e.touches[0].clientX; }, { passive: true });
+      wrap.addEventListener('touchmove', e => {
+        if (App._swipeX == null) return;
+        const dx = e.touches[0].clientX - App._swipeX;
+        if (dx < 0) {
+          wrap.style.transform = `translateX(${dx}px)`;
+          wrap.style.opacity = 1 + (dx / 300);
+        }
+      }, { passive: true });
+      wrap.addEventListener('touchend', e => {
+        if (App._swipeX == null) return;
+        const dx = (e.changedTouches[0].clientX - App._swipeX);
+        wrap.style.transform = '';
+        wrap.style.opacity = '';
+        App._swipeX = null;
+        if (dx < -60 && App.state.flashcardFlipped && !isLast) {
+          App.nextCard();
+        }
+      }, { passive: true });
+    }
+  },
+
+  flipFlashcard() {
+    this.state.flashcardFlipped = !this.state.flashcardFlipped;
+    const el = document.querySelector('.flashcard');
+    if (el) el.classList.toggle('flipped');
+    if (this.state.flashcardFlipped) {
+      const card = this.state.flashcardDeck[this.state.flashcardIdx];
+      if (card) this.speak(card.char);
+    }
+  },
+
+  flashcardResult(known) {
+    const deck = this.state.flashcardDeck;
+    const idx = this.state.flashcardIdx;
+    const card = deck[idx];
+    const knownKey = (card.type === 'hiragana' ? 'h_' : 'k_') + card.rom;
+
+    if (known && !this.state.flashcardKnown.includes(knownKey)) {
+      this.state.flashcardKnown.push(knownKey);
+    } else if (!known) {
+      this.state.flashcardKnown = this.state.flashcardKnown.filter(k => k !== knownKey);
+    }
+    this.save();
+
+    if (idx + 1 < deck.length) {
+      this.state.flashcardIdx++;
+      this.state.flashcardFlipped = false;
+      this.renderFlashcard();
+    } else {
+      const known = this.state.flashcardKnown.length;
+      const total = FLASH_KANA.length * 2;
+      document.getElementById('quizContent').innerHTML = `<div class="quiz-result" style="margin-top:0;">
+        <div class="score">${known}/${total}</div>
+        <div class="score-label">已熟悉（全部 ${Object.keys(filterLabels).length} 種）</div>
+        <div class="msg">${known === total ? '🎉 全部記住了！太棒了！' : known > total * 0.7 ? '👏 進度不錯，繼續加油！' : '💪 多練習幾次就會記住了！'}</div>
+        <button class="quiz-submit" onclick="App.state.flashcardMode=false;App.switchTab('home')" style="margin-top:var(--spacing-lg);">返回首頁</button>
+        <button class="quiz-submit" onclick="App.restartFlashcard()" style="margin-top:var(--spacing-sm);background:var(--accent-violet-mid);">再次練習</button>
+      </div>`;
+    }
+  },
+
+  nextCard() {
+    const deck = this.state.flashcardDeck;
+    if (this.state.flashcardIdx + 1 >= deck.length) return;
+    this.state.flashcardIdx++;
+    this.state.flashcardFlipped = false;
+    this.renderFlashcard();
+  },
+
+  prevCard() {
+    if (this.state.flashcardIdx <= 0) return;
+    this.state.flashcardIdx--;
+    this.state.flashcardFlipped = false;
+    this.renderFlashcard();
+  },
+
+  restartFlashcard() {
+    this.state.flashcardDeck = this.buildDeck(this.state.flashcardFilter);
+    this.state.flashcardIdx = 0;
+    this.state.flashcardFlipped = false;
+    this.state.flashcardMode = true;
+    this.renderFlashcard();
+  },
+
+  speak(text, rate = 0.9) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP';
+    u.rate = rate;
+    u.pitch = 1;
+    window.speechSynthesis.speak(u);
+  },
+
+  /* ─── render lessons ─── */
+  renderLessons() {
+    const list = document.getElementById('lessonList');
+    const detail = document.getElementById('lessonDetail');
+    list.style.display = 'block';
+    detail.classList.remove('active');
+    detail.innerHTML = '';
+    const backBtn = document.getElementById('backBtn');
+
+    if (this.state.viewingWeek !== null) {
+      backBtn.classList.add('visible');
+      return;
+    }
+    backBtn.classList.remove('visible');
+
+    list.innerHTML = '<h2 style="font-size:18px;font-weight:600;margin-bottom:var(--spacing-lg);">課程列表</h2>' +
+      '<div class="lesson-list">' +
+      COURSE.weeks.map(w => {
+        const done = this.state.done.includes(w.id);
+        const score = this.state.scores[w.id];
+        const status = done ? '✅' : (score !== undefined ? '📝' : '🔒');
+        return `<div class="lesson-card${done ? ' completed' : ''}" onclick="App.openLesson(${w.id})">
+          <div class="badge">${String(w.id).padStart(2,'0')}</div>
+          <div class="info">
+            <h3>第 ${w.id} 週：${w.title}</h3>
+            <p>${w.topics}</p>
+          </div>
+          <div class="status-icon">${status}</div>
+        </div>`;
+      }).join('') +
+      '</div>';
+  },
+
+  renderLessonDetail(id) {
+    const w = COURSE.weeks.find(x => x.id === id);
+    if (!w) return;
+    const list = document.getElementById('lessonList');
+    const detail = document.getElementById('lessonDetail');
+    list.style.display = 'none';
+    detail.classList.add('active');
+
+    let html = `<div style="margin-bottom:var(--spacing-lg);">
+      <p style="font-size:12px;color:var(--on-dark-muted);text-transform:uppercase;letter-spacing:0.2px;">第 ${id} 週</p>
+      <h2 style="font-size:22px;font-weight:600;margin-top:var(--spacing-xs);">${w.title}</h2>
+    </div>`;
+
+    if (w.intro) {
+      html += `<p class="intro-text">${w.intro}</p>`;
+    }
+
+    if (w.kana && w.kana.length) {
+      html += `<div class="section-title">🔊 假名表（點擊聽發音）</div>
+        <div class="kana-grid">`;
+      w.kana.forEach(k => {
+        html += `<div class="kana-cell" onclick="App.speak('${k.char}')">
+          <span class="char">${k.char}</span>
+          <span class="rom">${k.rom}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    if (w.vocab && w.vocab.length) {
+      html += `<div class="section-title">📖 單字</div><div class="vocab-list">`;
+      w.vocab.forEach(v => {
+        html += `<div class="vocab-item">
+          <span class="jp">${v.jp}</span>
+          <span class="romaji">${v.rom}</span>
+          <span class="zh">${v.zh}</span>
+          <button class="sound-btn" onclick="event.stopPropagation();App.speak('${v.jp}')">▶</button>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    if (w.grammar && w.grammar.length) {
+      html += `<div class="section-title">📚 文法</div>`;
+      w.grammar.forEach(g => {
+        html += `<div class="grammar-item">
+          <div class="pattern">${g.pattern}</div>
+          <div class="explain">${g.explain}</div>
+          <div class="example">${g.example}</div>
+        </div>`;
+      });
+    }
+
+    const hasQuiz = w.quiz && w.quiz.length;
+    if (hasQuiz) {
+      const done = this.state.done.includes(id);
+      const score = this.state.scores[id];
+      html += `<div style="margin-top:var(--spacing-xl);text-align:center;">
+        <button class="quiz-submit" onclick="App.startQuiz(${id})" style="display:inline-block;width:auto;padding:var(--spacing-md) var(--spacing-xxl);">
+          ${done ? '📝 重新測驗' : '✍️ 開始測驗'}
+        </button>
+        ${score !== undefined ? `<p style="margin-top:var(--spacing-sm);color:var(--on-dark-muted);font-size:13px;">上次成績：${score} 分</p>` : ''}
+      </div>`;
+    }
+
+    // Mark as done button
+    if (!this.state.done.includes(id)) {
+      html += `<div style="margin-top:var(--spacing-lg);text-align:center;">
+        <button class="quiz-submit" onclick="App.markDone(${id})" style="display:inline-block;width:auto;padding:var(--spacing-md) var(--spacing-xxl);background:var(--accent-violet-mid);">
+          ✅ 標記為已完成
+        </button>
+      </div>`;
+    }
+
+    detail.innerHTML = html;
+  },
+
+  markDone(id) {
+    if (!this.state.done.includes(id)) {
+      this.state.done.push(id);
+      this.save();
+      this.renderLessonDetail(id);
+    }
+  },
+
+  /* ─── quiz ─── */
+  startQuiz(id) {
+    this.state.quizWeek = id;
+    this.state.quizSubmitted = false;
+    document.getElementById('backBtn').classList.add('visible');
+    this.switchTab('quiz');
+  },
+
+  renderQuiz() {
+    const container = document.getElementById('quizContent');
+    const id = this.state.quizWeek;
+    if (!id) {
+      container.innerHTML = `<div class="empty-state">
+        <span class="icon">📝</span>
+        <p>請先從課程中選擇一課<br>點擊「開始測驗」按鈕</p>
+      </div>
+      <div style="text-align:center;padding:var(--spacing-lg) 0;">
+        <div style="border-top:1px solid var(--hairline-violet);padding-top:var(--spacing-xl);margin:0 var(--spacing-xl);"></div>
+        <p style="color:var(--on-dark-muted);font-size:13px;margin-bottom:var(--spacing-lg);">或使用閃卡練習 50 音</p>
+        <button class="quiz-submit" onclick="App.openFlashcard()" style="display:inline-block;width:auto;padding:var(--spacing-md) var(--spacing-xxl);background:var(--accent-violet-deep);">
+          🃏 50 音閃卡
+        </button>
+        <p style="color:var(--on-dark-muted);font-size:12px;margin-top:var(--spacing-sm);">已熟悉 ${this.state.flashcardKnown.length} / ${FLASH_KANA.length * 2} 個</p>
+      </div>`;
+      return;
+    }
+    const w = COURSE.weeks.find(x => x.id === id);
+    if (!w || !w.quiz || !w.quiz.length) {
+      container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>此課尚無測驗</p></div>`;
+      return;
+    }
+
+    const done = this.state.done.includes(id);
+    const prevScore = this.state.scores[id];
+
+    let html = `<div class="quiz-header">
+      <h2>第 ${id} 週測驗：${w.title}</h2>
+      <p class="quiz-meta">共 ${w.quiz.length} 題 · 點擊選項作答 · 完成後按提交</p>
+      ${prevScore !== undefined ? `<p style="color:var(--accent-lime);font-size:13px;margin-top:var(--spacing-xs);">上次成績：${prevScore}/100</p>` : ''}
+    </div>`;
+
+    w.quiz.forEach((q, i) => {
+      html += `<div class="quiz-question" data-q="${i}">
+        <div class="q-num">問題 ${i + 1} / ${w.quiz.length}</div>
+        <div class="q-text">${q.q}</div>
+        <div class="quiz-options" data-q="${i}">`;
+      q.opts.forEach((o, j) => {
+        html += `<button class="quiz-option" data-q="${i}" data-opt="${j}" onclick="App.selectAnswer(${i}, ${j})">
+          <span class="opt-label">${String.fromCharCode(65 + j)}</span> ${o}
+        </button>`;
+      });
+      html += `</div></div>`;
+    });
+
+    html += `<button class="quiz-submit" id="quizSubmitBtn" onclick="App.submitQuiz()" disabled>提交答案</button>`;
+
+    container.innerHTML = html;
+  },
+
+  selectAnswer(qIdx, optIdx) {
+    if (this.state.quizSubmitted) return;
+    const container = document.querySelector(`.quiz-options[data-q="${qIdx}"]`);
+    container.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+    container.querySelector(`[data-opt="${optIdx}"]`).classList.add('selected');
+
+    // Track selected
+    if (!this._answers) this._answers = {};
+    this._answers[qIdx] = optIdx;
+
+    // Enable submit if all answered
+    const w = COURSE.weeks.find(x => x.id === this.state.quizWeek);
+    const total = w.quiz.length;
+    const answered = Object.keys(this._answers).length;
+    document.getElementById('quizSubmitBtn').disabled = answered < total;
+  },
+
+  submitQuiz() {
+    if (this.state.quizSubmitted) return;
+    const w = COURSE.weeks.find(x => x.id === this.state.quizWeek);
+    if (!w) return;
+    this.state.quizSubmitted = true;
+
+    let correct = 0;
+    w.quiz.forEach((q, i) => {
+      const selected = this._answers[i];
+      const opts = document.querySelectorAll(`.quiz-options[data-q="${i}"] .quiz-option`);
+      opts.forEach((b, j) => {
+        b.disabled = true;
+        if (j === q.ans) b.classList.add('correct');
+        if (j === selected && j !== q.ans) b.classList.add('wrong');
+      });
+      if (selected === q.ans) correct++;
+    });
+
+    const pct = Math.round((correct / w.quiz.length) * 100);
+    this.state.scores[w.id] = pct;
+
+    let msg = '';
+    if (pct === 100) msg = '完美！全部答對了！🎉';
+    else if (pct >= 80) msg = '非常好！繼續保持！👏';
+    else if (pct >= 60) msg = '不錯，再加強一下！💪';
+    else msg = '加油，多複習幾次！📖';
+
+    const container = document.getElementById('quizContent');
+    container.insertAdjacentHTML('beforeend', `<div class="quiz-result">
+      <div class="score">${correct}/${w.quiz.length}</div>
+      <div class="score-label">正確題數</div>
+      <div class="msg">${msg}</div>
+    </div>`);
+
+    document.getElementById('quizSubmitBtn').disabled = true;
+    document.getElementById('quizSubmitBtn').textContent = '已提交';
+
+    // Auto mark done if passed
+    if (pct >= 60 && !this.state.done.includes(w.id)) {
+      this.state.done.push(w.id);
+    }
+    this.save();
+  },
+
+  /* ─── home stats ─── */
+  updateHomeStats() {
+    const total = COURSE.weeks.length;
+    const done = this.state.done.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('ringPct').textContent = pct + '%';
+    const circle = document.getElementById('ringFg');
+    const circumference = 314.16;
+    circle.style.strokeDashoffset = circumference - (pct / 100) * circumference;
+
+    document.getElementById('statLessons').textContent = done + '/' + total;
+    const quizCount = Object.keys(this.state.scores).length;
+    document.getElementById('statQuizzes').textContent = quizCount;
+
+    const scores = Object.values(this.state.scores);
+    const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '-';
+    document.getElementById('statAvg').textContent = avg;
+  },
+
+  /* ─── progress ─── */
+  renderProgress() {
+    const container = document.getElementById('progressContent');
+    const total = COURSE.weeks.length;
+    const done = this.state.done.length;
+    const scores = Object.values(this.state.scores);
+    const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+
+    let html = `<h2 style="font-size:18px;font-weight:600;margin-bottom:var(--spacing-lg);">學習進度</h2>
+      <div class="progress-grid">
+        <div class="progress-card"><div class="big">${done}/${total}</div><div class="lbl">已完成課程</div></div>
+        <div class="progress-card"><div class="big">${scores.length}</div><div class="lbl">測驗次數</div></div>
+        <div class="progress-card"><div class="big">${avg}分</div><div class="lbl">平均分數</div></div>
+        <div class="progress-card"><div class="big">${Math.round((done/total)*100)}%</div><div class="lbl">總完成率</div></div>
+      </div>
+      <div class="section-title" style="margin-top:0;">各課進度</div>
+      <div class="progress-detail">`;
+
+    COURSE.weeks.forEach(w => {
+      const d = this.state.done.includes(w.id);
+      const s = this.state.scores[w.id];
+      const bar = s !== undefined ? s : (d ? 100 : 0);
+      const status = d ? '✅' : (s !== undefined ? '📝' : '⭕');
+      html += `<div class="progress-row">
+        <span class="p-status">${status}</span>
+        <span class="p-name">第${w.id}課</span>
+        <div class="p-bar"><div class="fill" style="width:${bar}%"></div></div>
+        <span class="p-score">${s !== undefined ? s + '分' : (d ? '✓' : '-')}</span>
+      </div>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+  },
+
+  /* ─── quiz tracking ─── */
+  _answers: {}
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>

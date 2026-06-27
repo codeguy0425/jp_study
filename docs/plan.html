@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日語入門課程 · 設計規劃書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #150f23;
+  --ink-deep: #1f1633;
+  --accent-lime: #c2ef4e;
+  --accent-pink: #fa7faa;
+  --accent-violet-mid: #79628c;
+  --accent-violet-deep: #422082;
+  --surface-canvas-dark: #1f1633;
+  --surface-night: #150f23;
+  --on-primary: #ffffff;
+  --on-dark-muted: rgba(255,255,255,0.72);
+  --on-dark-faint: rgba(255,255,255,0.18);
+  --hairline-violet: #362d59;
+  --font-ui: 'Rubik', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-section: 96px;
+  --rounded-xs: 4px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 10px;
+  --rounded-xl: 12px;
+  --rounded-xxl: 18px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-ui);
+  background: var(--surface-canvas-dark);
+  color: var(--on-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── navigation ─── */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--surface-canvas-dark);
+  max-width: 1152px;
+  margin: 0 auto;
+}
+.nav-brand {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  color: var(--on-primary);
+}
+.nav-brand span { color: var(--accent-lime); }
+.nav-links { display: flex; gap: var(--spacing-xl); list-style: none; }
+.nav-links a {
+  color: var(--on-primary);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  opacity: 0.8;
+  transition: opacity .2s;
+}
+.nav-links a:hover { opacity: 1; }
+
+/* ─── hero ─── */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: var(--spacing-section) var(--spacing-xl) 80px;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.12) 0, transparent 0),
+                    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.08) 0, transparent 0),
+                    radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.10) 0, transparent 0),
+                    radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.06) 0, transparent 0),
+                    radial-gradient(1.5px 1.5px at 10% 80%, rgba(255,255,255,0.09) 0, transparent 0),
+                    radial-gradient(1.5px 1.5px at 70% 90%, rgba(255,255,255,0.07) 0, transparent 0),
+                    radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.11) 0, transparent 0),
+                    radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.05) 0, transparent 0);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; max-width: 768px; margin: 0 auto; }
+.hero-eyebrow {
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  color: var(--on-dark-muted);
+  margin-bottom: var(--spacing-lg);
+}
+.hero h1 {
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-xl);
+}
+.hero h1 .chip-lime {
+  display: inline-block;
+  background: var(--accent-lime);
+  color: var(--primary);
+  border-radius: var(--rounded-xs);
+  padding: 0 var(--spacing-md);
+  font-weight: 700;
+}
+.hero p {
+  font-size: 16px;
+  line-height: 2;
+  color: var(--on-dark-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ─── sections ─── */
+.section {
+  padding: 80px var(--spacing-xl);
+  max-width: 1152px;
+  margin: 0 auto;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.section-header .eyebrow {
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  color: var(--accent-lime);
+  margin-bottom: var(--spacing-sm);
+}
+.section-header h2 {
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.section-header p {
+  color: var(--on-dark-muted);
+  line-height: 2;
+  margin-top: var(--spacing-md);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── overview cards ─── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+}
+.card-overview {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-xxl);
+  padding: var(--spacing-xxl);
+  text-align: center;
+}
+.card-overview .icon {
+  font-size: 32px;
+  margin-bottom: var(--spacing-lg);
+  display: block;
+}
+.card-overview h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+.card-overview p {
+  color: var(--on-dark-muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* ─── week timeline ─── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+.week-card {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-xl) var(--spacing-xxl);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+  transition: background .2s;
+}
+.week-card:hover { background: var(--ink-deep); }
+.week-badge {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--rounded-lg);
+  background: var(--accent-violet-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.week-badge .num { font-size: 26px; color: var(--accent-lime); }
+.week-badge .label { font-size: 11px; color: var(--on-dark-muted); text-transform: uppercase; letter-spacing: 0.2px; margin-top: 2px; }
+.week-body { flex: 1; }
+.week-body h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+.week-body .topics {
+  color: var(--on-dark-muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ─── teaching approach ─── */
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-xl);
+}
+.card-approach {
+  background: var(--accent-violet-deep);
+  border-radius: var(--rounded-xxl);
+  padding: var(--spacing-xxl);
+}
+.card-approach.featured {
+  background: var(--surface-night);
+  border: 2px solid var(--accent-lime);
+  grid-column: 1 / -1;
+}
+.card-approach h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+.card-approach p {
+  color: var(--on-dark-muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+.card-approach ul {
+  list-style: none;
+  margin-top: var(--spacing-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+.card-approach ul li {
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+/* ─── materials ─── */
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg);
+}
+.material-item {
+  background: var(--surface-night);
+  border: 1px solid var(--hairline-violet);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+.material-item .mat-icon { font-size: 28px; margin-bottom: var(--spacing-sm); display: block; }
+.material-item h4 { font-size: 16px; font-weight: 600; margin-bottom: var(--spacing-xs); }
+.material-item p { color: var(--on-dark-muted); font-size: 13px; line-height: 1.6; }
+
+/* ─── footer ─── */
+.lime-squiggle {
+  width: 100%;
+  height: 24px;
+  display: block;
+}
+.lime-squiggle svg { width: 100%; height: 100%; }
+.site-footer {
+  background: var(--surface-night);
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  text-align: center;
+}
+.site-footer p {
+  color: var(--on-dark-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ─── responsive ─── */
+@media (max-width: 992px) {
+  .overview-grid { grid-template-columns: repeat(2, 1fr); }
+  .approach-grid { grid-template-columns: 1fr; }
+  .materials-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 44px; }
+  .section-header h2 { font-size: 28px; }
+  .week-card { flex-direction: column; align-items: flex-start; gap: var(--spacing-md); }
+  .week-badge { width: 60px; height: 60px; }
+  .week-badge .num { font-size: 22px; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero { padding: 60px var(--spacing-lg) 48px; }
+  .hero h1 { font-size: 34px; }
+  .section { padding: 48px var(--spacing-lg); }
+  .section-header { margin-bottom: 32px; }
+  .overview-grid { grid-template-columns: 1fr; }
+  .materials-grid { grid-template-columns: 1fr; }
+  .card-overview, .card-approach { padding: var(--spacing-xl); }
+  .week-card { padding: var(--spacing-lg) var(--spacing-xl); }
+  .section-header h2 { font-size: 24px; }
+  .hero p { font-size: 15px; }
+}
+@media (max-width: 576px) {
+  .hero h1 { font-size: 28px; }
+  .hero h1 .chip-lime { padding: 0 var(--spacing-sm); }
+  .hero p { line-height: 1.8; }
+  .week-badge { width: 48px; height: 48px; }
+  .week-badge .num { font-size: 18px; }
+  .week-badge .label { font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- nav -->
+<nav class="nav">
+  <div class="nav-brand"><span>日</span>語計画</div>
+  <ul class="nav-links">
+    <li><a href="#overview">概要</a></li>
+    <li><a href="#curriculum">課程</a></li>
+    <li><a href="#approach">教學</a></li>
+    <li><a href="#materials">教材</a></li>
+    <li><a href="app/index.html" style="color:var(--accent-lime);opacity:1;">前往 App →</a></li>
+  </ul>
+</nav>
+
+<!-- hero -->
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">日本語 入門コース</p>
+    <h1>日語<span class="chip-lime">入門</span>課程<br>設計規劃書</h1>
+    <p>本文件為課程設計階段的整體藍圖 · 互動式課程 App 另建於 <code style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:4px;font-size:14px;">app/</code> 中</p>
+  </div>
+</section>
+
+<!-- overview -->
+<section class="section" id="overview">
+  <div class="section-header">
+    <p class="eyebrow">Overview</p>
+    <h2>課程概要</h2>
+    <p>專為完全零基礎的繁體中文使用者設計，透過清晰的學習路徑與語音輔助，打好日語基礎。</p>
+  </div>
+  <div class="overview-grid">
+    <div class="card-overview">
+      <span class="icon">🎯</span>
+      <h3>學習目標</h3>
+      <p>8 週內掌握平假名・片假名・基本文法・日常會話，達到 JLPT N5 程度</p>
+    </div>
+    <div class="card-overview">
+      <span class="icon">🗣️</span>
+      <h3>語音教學</h3>
+      <p>每課內建 Web Speech API 發音按鈕，點擊即可聽正確發音，隨時練習</p>
+    </div>
+    <div class="card-overview">
+      <span class="icon">📝</span>
+      <h3>繁體中文輔助</h3>
+      <p>全部解說以繁體中文呈現，對照注音符號與羅馬拼音，降低學習門檻</p>
+    </div>
+  </div>
+</section>
+
+<!-- curriculum -->
+<section class="section" id="curriculum">
+  <div class="section-header">
+    <p class="eyebrow">8-Week Curriculum</p>
+    <h2>八週課程表</h2>
+    <p>每週一課，循序漸進，從發音基礎到日常會話</p>
+  </div>
+  <div class="timeline">
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">01</span>
+        <span class="label">第 1 週</span>
+      </div>
+      <div class="week-body">
+        <h3>日語概論 · 發音基礎</h3>
+        <p class="topics">假名起源與結構 · 母音（あいうえお）· 子音 · 日語聲調入門 · 發音器官與口型</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">02</span>
+        <span class="label">第 2 週</span>
+      </div>
+      <div class="week-body">
+        <h3>平假名（上）</h3>
+        <p class="topics">あ行～な行（清音 25 字）· 筆順與書寫 · 單字練習 · 聽音辨字</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">03</span>
+        <span class="label">第 3 週</span>
+      </div>
+      <div class="week-body">
+        <h3>平假名（下）</h3>
+        <p class="topics">は行～わ行・ん · 濁音（がぎぐげご）· 半濁音（ぱぴぷぺぽ）· 拗音（きゃ・きゅ・きょ）</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">04</span>
+        <span class="label">第 4 週</span>
+      </div>
+      <div class="week-body">
+        <h3>片假名 · 外來語</h3>
+        <p class="topics">ア行～ワ行・ン · 濁音・半濁音・拗音 · 長音與促音 · 外來語書寫規則</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">05</span>
+        <span class="label">第 5 週</span>
+      </div>
+      <div class="week-body">
+        <h3>基本問候 · 自我介紹</h3>
+        <p class="topics">です・ます 體 · 禮貌用語（おはよう・こんにちは等）· 數字 1～100 · 自己紹介文</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">06</span>
+        <span class="label">第 6 週</span>
+      </div>
+      <div class="week-body">
+        <h3>動詞與形容詞入門</h3>
+        <p class="topics">五段動詞與一段動詞 · い形容詞與な形容詞 · 現在式・否定形 · 日常用語例句</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">07</span>
+        <span class="label">第 7 週</span>
+      </div>
+      <div class="week-body">
+        <h3>助詞與句型結構</h3>
+        <p class="topics">助詞：は・が・を・に・で・へ · 疑問句・否定句・過去式 · 時間表達</p>
+      </div>
+    </div>
+    <div class="week-card">
+      <div class="week-badge">
+        <span class="num">08</span>
+        <span class="label">第 8 週</span>
+      </div>
+      <div class="week-body">
+        <h3>日常會話 · 總複習</h3>
+        <p class="topics">購物・餐廳・問路情境會話 · 文法總整理 · 簡短對話練習 · 成果發表</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- teaching approach -->
+<section class="section" id="approach">
+  <div class="section-header">
+    <p class="eyebrow">Teaching Method</p>
+    <h2>教學方式</h2>
+    <p>多重輔助工具，讓發音學習更直覺</p>
+  </div>
+  <div class="approach-grid">
+    <div class="card-approach">
+      <h3>🔊 語音輔助</h3>
+      <p>每課提供 Web Speech API 即時發音按鈕，點選假名或單字即可聆聽標準日語發音。未來 App 將加入語速調整與慢速跟讀模式。</p>
+    </div>
+    <div class="card-approach">
+      <h3>📖 繁體中文對照</h3>
+      <p>所有文法解說、單字釋義、練習指示皆以繁體中文呈現。必要時附注音符號輔助發音記憶。</p>
+    </div>
+    <div class="card-approach featured">
+      <h3>⭐ 每課附小測驗</h3>
+      <p>每週課程結束後提供互動式小測驗（選擇題、聽力題、填空題），即時核對答案。App 將內建自動批改與分數記錄功能，搭配底部 tab 導航流暢切換。</p>
+      <ul>
+        <li>假名聽力辨識</li>
+        <li>單字日中配對</li>
+        <li>文法選擇題</li>
+        <li>簡短造句</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- materials -->
+<section class="section" id="materials">
+  <div class="section-header">
+    <p class="eyebrow">Materials</p>
+    <h2>教材準備</h2>
+    <p>教師將為每課準備以下教材</p>
+  </div>
+  <div class="materials-grid">
+    <div class="material-item">
+      <span class="mat-icon">📄</span>
+      <h4>課程講義</h4>
+      <p>每課 PDF 講義，含文法解說與範例句</p>
+    </div>
+    <div class="material-item">
+      <span class="mat-icon">🎧</span>
+      <h4>發音音檔</h4>
+      <p>Web Speech API 即時播放 + 可下載音檔</p>
+    </div>
+    <div class="material-item">
+      <span class="mat-icon">📝</span>
+      <h4>練習題</h4>
+      <p>每課附練習題與解答（紙本 + 互動）</p>
+    </div>
+    <div class="material-item">
+      <span class="mat-icon">📋</span>
+      <h4>單字卡</h4>
+      <p>重點單字與例句整理，方便複習</p>
+    </div>
+    <div class="material-item" style="border-color:var(--accent-lime);">
+      <span class="mat-icon">📱</span>
+      <h4 style="color:var(--accent-lime);">互動 App</h4>
+      <p>位於 <code>app/</code> 資料夾，含底部 tab 導航、發音、測驗批改與進度追蹤</p>
+    </div>
+  </div>
+</section>
+
+<!-- lime squiggly divider -->
+<div class="lime-squiggle" aria-hidden="true">
+  <svg viewBox="0 0 1152 24" preserveAspectRatio="none">
+    <path d="M0,12 Q48,24 96,12 Q144,0 192,12 Q240,24 288,12 Q336,0 384,12 Q432,24 480,12 Q528,0 576,12 Q624,24 672,12 Q720,0 768,12 Q816,24 864,12 Q912,0 960,12 Q1008,24 1056,12 Q1104,0 1152,12"
+          fill="none" stroke="#c2ef4e" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- footer -->
+<footer class="site-footer">
+  <p>日本語 入門コース · 設計規劃書（規劃階段文件）<br>為繁體中文初學者設計 · 8 週密集學習 · 語音輔助教學<br>互動式課程 App 請見 <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;font-size:13px;">app/index.html</code></p>
+</footer>
+
+</body>
+</html>
