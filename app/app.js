@@ -473,6 +473,7 @@ const App = {
   startQuiz(id) {
     this.state.quizWeek = id;
     this.state.quizSubmitted = false;
+    this._answers = {};
     document.getElementById('backBtn').classList.add('visible');
     this.switchTab('quiz');
   },
