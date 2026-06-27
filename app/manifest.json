@@ -1,0 +1,19 @@
+{
+  "name": "日語入門 · 互動課程",
+  "short_name": "日語教室",
+  "description": "8 週日語入門課程 — 假名、單字、文法、測驗、閃卡",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#150f23",
+  "theme_color": "#1f1633",
+  "orientation": "portrait",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
