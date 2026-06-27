@@ -29,7 +29,9 @@
   --rounded-xxl: 18px;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { height: 100%; overflow: hidden; }
 
 body {
   font-family: var(--font-ui);
@@ -38,7 +40,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
-  height: 100dvh;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
